@@ -1,0 +1,24 @@
+{
+  "name": "kusama-genesis-spec",
+  "version": "1.0.0",
+  "description": "Genesis generation and chain state verification tool for Kusama.",
+  "main": "index.js",
+  "scripts": {
+    "genesis": "node index.js genesis",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "Kusama",
+    "Polkadot",
+    "Blockchain"
+  ],
+  "author": "Web3 Foundation",
+  "license": "ISC",
+  "dependencies": {
+    "@polkadot/api": "^0.90.0-beta.56",
+    "@polkadot/keyring": "^1.1.1",
+    "@polkadot/util": "^1.1.1",
+    "commander": "^3.0.0",
+    "web3": "^1.2.1"
+  }
+}
