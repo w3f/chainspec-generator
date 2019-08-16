@@ -18,7 +18,7 @@ const w3Util = (new Web3()).utils;
 const ChainSpecTemplate = require('../template.json');
 
 /// Vesting Length (six months for Kusama)
-const VestingLength = Math.ceil(6 * 30 * 24 * 60 * (60 / 1.65)); // 1.65s slot times
+const VestingLength = Math.ceil(6 * 30 * 24 * 60 * (60 / 6)); // 6s block times
 
 module.exports = async (cmd) => {
   const { atBlock, test } = cmd;
