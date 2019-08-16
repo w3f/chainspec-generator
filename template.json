@@ -267,7 +267,12 @@
             },
             "parachains": {
                 "authorities": [
-                  "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY"
+                  "5Gdk6etLTvqkMk16iePp1BwsLjjC9j96SBtqWq5SMEf6wpee",
+                  "5G9HTB1dQi5wbyKqJsNbKw2NL5vtoWEmVuFR5M33RBSmNJ1u",
+                  "5GuyZvzUCfDyUD98uFUoA7TBpQBbJ9xsd8ZzgJ2FwuNskZLh",
+                  "5ERCNLU4EP53AC4hkFar4W4sa4H3En64VrrnAUFWDgd8G7oP",
+                  "5Cepixt1evmUR1KXqpiedyQBFGqzD6CFyHarJVFx17x94e1d",
+                  "5CcHi1bGDKCKJt6i7mxkjfvP3G1WzXagSFzXuGGbob681etk"
                 ],
                 "parachains": [],
                 "phdata": null
