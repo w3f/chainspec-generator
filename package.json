@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "genesis": "node index.js genesis",
+    "verify": "node index.js verify",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [

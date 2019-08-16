@@ -28,7 +28,7 @@ $ yarn genesis --atBlock 8698698
 
 ### Verifying the Initial State of a Chain
 
-Once you have started a chain using the `kusama.json` chain specification, you can also (TODO) use this tool to verify that the state initialized properly.
+Once you have started a chain using the `kusama.json` chain specification, you can also use this tool to verify that the state initialized properly.
 
 ```zsh
 $ yarn verify --atBlock 8698698
