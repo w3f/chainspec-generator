@@ -15,7 +15,7 @@
     "protocolId": "ksma",
     "consensusEngine": null,
     "properties": {
-        "tokenDecimals": 15,
+        "tokenDecimals": 3,
         "tokenSymbol": "KSM"
     },
     "genesis": {
