@@ -34,7 +34,7 @@ module.exports = async (cmd) => {
   // Write to chain spec any accounts that still need to claim.
   leftoverTokenHolders.forEach((value, key) => {
     ChainSpecTemplate.genesis.runtime.claims.claims.push([
-      w3Util.hexToBytes(key),
+      key,
       value.balance.toNumber()
     ]);
 
