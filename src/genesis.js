@@ -21,9 +21,9 @@ const ChainSpecTemplate = require('../template.json');
 const VestingLength = Math.ceil(6 * 30 * 24 * 60 * (60 / 6)); // 6s block times
 
 module.exports = async (cmd) => {
-  const { atBlock, test } = cmd;
+  const { atBlock, endpoint, test } = cmd;
 
-  const w3 = getW3();
+  const w3 = getW3(endpoint);
   const kusamaClaims = getClaimsContract(w3);
   const dotAllocationIndicator = getFrozenTokenContract(w3);
 
