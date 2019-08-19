@@ -34,7 +34,11 @@
         "phantom": null
       },
       "collectiveInstance2": {
-        "members": [],
+        "members": [
+          "5F4Q7Kim6X3AQbdHx5Y5FHWfZeqDLM4Tn1dKYssLtWBcL1Dc",
+          "5EX6SaWnuUEq2wrjGvLtifeWzYEGpfXaSPR8vTuhRptartzf",
+          "5FBihecsubekfmyUN1ANhRPpKmGv76MFuVb1wAHuRhNUqoEV"
+        ],
         "phantom": null
       },
       "elections": {
