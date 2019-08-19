@@ -4,7 +4,7 @@ CLI for generating the Kusama chain specification from Ethereum state.
 
 ## Running
 
-Clone this repository to your desired environment and install the dependencies using `yarn`.
+Clone this repository to your desired environment and install the dependencies using `yarn`. You will also need Python3.
 
 ```zsh
 $ git clone https://github.com/w3f/kusama-genesis-spec.git
@@ -17,13 +17,14 @@ $ yarn
 In order to generate the `kusama.json` chain specification from Ethereum state, run the command like so:
 
 ```zsh
-$ yarn genesis --endpoint <httpEndpoint>
+$ chmod +x genesis.sh
+$ HTTP_ENDPOINT=<URL> AT_BLOCK=latest ./genesis.sh
 ```
 
-In order to generate using the Ethereum state from a _specific_ block, run the command with the `--atBlock <num>` option:
+In order to generate using the Ethereum state from a _specific_ block, run the command with the `AT_BLOCK` environmental variable:
 
 ```zsh
-$ yarn genesis --atBlock 8698698
+$ HTTP_ENDPOINT=<URL> AT_BLOCK=<ETH_BLOCK_NUM> ./genesis.sh
 ```
 
 ### Verifying the Initial State of a Chain

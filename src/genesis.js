@@ -110,7 +110,7 @@ module.exports = async (cmd) => {
   }
 
   fs.writeFileSync(
-    'kusama.json',
+    'kusama.tmp.json',
     JSON.stringify(ChainSpecTemplate, null, 2),
   );
 
