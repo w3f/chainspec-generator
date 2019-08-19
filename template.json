@@ -163,6 +163,7 @@
         "invulnerables": [],
         "currentEra": 0,
         "forceEra": "ForceNone",
+        "slashRewardFraction": 100000000,
         "stakers": []
       },
       "democracy": {},
