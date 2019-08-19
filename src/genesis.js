@@ -14,9 +14,6 @@ const {
 
 const w3Util = (new Web3()).utils;
 
-/// Amount of extra decimals to add to the values.
-const DECIMALS = w3Util.toBN(1*10**6); // -3 decimals
-
 /// Chain Specification Template
 const ChainSpecTemplate = require('../template.json');
 
@@ -38,7 +35,7 @@ module.exports = async (cmd) => {
   leftoverTokenHolders.forEach((value, key) => {
     ChainSpecTemplate.genesis.runtime.claims.claims.push([
       w3Util.hexToBytes(key),
-      value.balance.mul(DECIMALS).toNumber()
+      value.balance.toNumber()
     ]);
 
     leftoverTokenHolders.delete(key);
@@ -63,7 +60,7 @@ module.exports = async (cmd) => {
     // Put in the balane.
     ChainSpecTemplate.genesis.runtime.balances.balances.push([
       encodedAddress,
-      balance.mul(DECIMALS).toNumber(),
+      balance.toNumber(),
     ]);
 
     // Put in the vesting (if it exists).
@@ -74,7 +71,7 @@ module.exports = async (cmd) => {
         encodedAddress,
         0,
         VestingLength,
-        liquid.mul(DECIMALS).toNumber(),
+        liquid.toNumber(),
       ]);
     }
 
@@ -113,7 +110,7 @@ module.exports = async (cmd) => {
   }
 
   fs.writeFileSync(
-    'kusama.json',
+    'kusama.tmp.json',
     JSON.stringify(ChainSpecTemplate, null, 2),
   );
 
