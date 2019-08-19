@@ -159,44 +159,7 @@
         "invulnerables": [],
         "currentEra": 0,
         "forceEra": "NotForcing",
-        "stakers": [
-          [
-            "5ECH2agQMGtSaPEh7uWebvQVHDb42RWy6bM3dEqmgFecMcTX",
-            "5EtK5zrNbP1MqpXcyauLfakzYXUv8HVnD8SXeeE8bGRBE6YX",
-            12345678,
-            "Validator"
-          ],
-          [
-            "5CqwbM9uWcwSnCz1mJ6kXr8KeHSeVe8tHQbHq9JiEowaCqGy",
-            "5H6W1NHrDxtEtek28pYYdoGpRp5rnaJi6Pyy1BeHLr1p99f1",
-            12345678,
-            "Validator"
-          ],
-          [
-            "5DNyWj96WdWE13TytQdpYYP7WHFqN7s9TpJUuqRsFenVpmb4",
-            "5GxSi26drj1EF6G2R7Uq1kwRPnUuAZXmPYGSTofxZ961LrUY",
-            12345678,
-            "Validator"
-          ],
-          [
-            "5EqShgxW2QGWYWy4MnL6pnN7e21CbQhyCr2HkAZo5mT1Lzws",
-            "5CifFueDomVTCQsmqvArkajqeAHD7RPR7qz2Gf7Wa31RUF7X",
-            12345678,
-            "Validator"
-          ],
-          [
-            "5HnG5jmh7H6vYqwdfW7VFSZHgZDndKCgrYS4p9ypTU3a7LcH",
-            "5Et6Ug57XA7jMMUEUnLgu1E5khi2onM82iaj9kfG8jYcjtEH",
-            12345678,
-            "Validator"
-          ],
-          [
-            "5EtSxEfvWpeuKbe3wrXyDR4PaBQrVzVR5nDtUhA6rudQyyFj",
-            "5GVpgvnRiNmDLKYCeVESFHzFgTGLyiF3Gm7QLEraPhfq3hhs",
-            12345678,
-            "Validator"
-          ]
-        ]
+        "stakers": []
       },
       "democracy": {},
       "sudo": {
