@@ -162,7 +162,7 @@
         "minimumValidatorCount": 1,
         "invulnerables": [],
         "currentEra": 0,
-        "forceEra": "NotForcing",
+        "forceEra": "ForceNone",
         "stakers": []
       },
       "democracy": {},
