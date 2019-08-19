@@ -17,7 +17,7 @@ $ yarn
 In order to generate the `kusama.json` chain specification from Ethereum state, run the command like so:
 
 ```zsh
-$ yarn genesis
+$ yarn genesis --endpoint <httpEndpoint>
 ```
 
 In order to generate using the Ethereum state from a _specific_ block, run the command with the `--atBlock <num>` option:
