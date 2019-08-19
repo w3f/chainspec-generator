@@ -1,5 +1,7 @@
 import json
 
+# The DOT Allocation Indicator only has 3 decimals representation, but we want 12. So we add 9 more.
+# We do this in Python because the JS JSON serializer will not allow us to write numbers larger than 2^53.
 DECIMALS = 1 * 10**9
 
 with open('kusama.tmp.json', encoding='utf-8') as f:
