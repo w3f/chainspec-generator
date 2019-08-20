@@ -20,6 +20,12 @@ const ChainSpecTemplate = require('../template.json');
 /// Vesting Length (six months for Kusama)
 const VestingLength = Math.ceil(6 * 30 * 24 * 60 * (60 / 6)); // 6s block times
 
+/// Seed
+const Seed = w3Util.toBN(w3Util.keccak256('Kusama'));
+
+/// Address counter
+let count = 0;
+
 module.exports = async (cmd) => {
   const { atBlock, endpoint, test } = cmd;
 
@@ -49,7 +55,11 @@ module.exports = async (cmd) => {
   // Fill in the indices with random data first.
   ChainSpecTemplate.genesis.runtime.indices.ids = Array.from(
     { length: 925 },
-    () => pdKeyring.encodeAddress(pdUtil.hexToU8a(w3Util.randomHex(32)))
+    () => {
+      const addr = pdKeyring.encodeAddress(pdUtil.hexToU8a('0x' + Seed.sub(w3Util.toBN(count)).toString('hex')));
+      count++;
+      return addr;
+    }
   );
 
   // Write to chain spec those that have claimed.
@@ -105,7 +115,8 @@ module.exports = async (cmd) => {
   for (let i = 0; i < idsLength; i++) {
     const { ids } = ChainSpecTemplate.genesis.runtime.indices;
     if (!ids[i]) {
-      ids[i] = pdKeyring.encodeAddress(pdUtil.hexToU8a(w3Util.randomHex(32)));
+      ids[i] = pdKeyring.encodeAddress(pdUtil.hexToU8a('0x' + Seed.sub(w3Util.toBN(count)).toString('hex')));
+      count++;
     }
   }
 
