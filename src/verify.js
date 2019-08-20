@@ -10,6 +10,8 @@ const {
   getClaimers,
 } = require('./helpers');
 
+const Decimals = 10**9;
+
 const getPdAPI = (endpoint) => {
   const provider = new WsProvider(endpoint);
 
@@ -50,6 +52,7 @@ module.exports = async (cmd) => {
 
   // Get the data from Ethereum.
   const w3 = getW3();
+  const toBN = w3.utils.toBN;
   const kusamaClaims = getClaimsContract(w3);
   const dotAllocationIndicator = getFrozenTokenContract(w3);
 
@@ -63,8 +66,8 @@ module.exports = async (cmd) => {
     const { balance } = value;
 
     const pdClaim = await api.query.claims.claims(key);
-    if (pdClaim.toString() !== balance.toString()) {
-      throw new Error(`Claim Error: Got ${pdClaim.toString()} but expect ${balance.toString()}.`);
+    if (pdClaim.toString() !== balance.mul(toBN(Decimals)).toString()) {
+      throw new Error(`Claim Error: Got ${pdClaim.toString()} but expect ${balance.mul(toBN(Decimals)).toString()}.`);
     } else {
       console.log(`Claim for ${key} checked!`);
     }
@@ -79,8 +82,8 @@ module.exports = async (cmd) => {
     const encodedAddress = pdKeyring.encodeAddress(pdUtil.hexToU8a(key));
 
     const pdBalance = await api.query.balances.freeBalance(encodedAddress);
-    if (pdBalance.toString() !== balance.toString()) {
-      throw new Error(`Balance Error: Got ${pdBalance.toString()} but expected ${balance.toString()}.`);
+    if (pdBalance.toString() !== balance.mul(toBN(Decimals)).toString()) {
+      throw new Error(`Balance Error: Got ${pdBalance.toString()} but expected ${balance.mul(toBN(Decimals)).toString()}.`);
     } else {
       console.log(`Balance for ${encodedAddress} checked!`);
     }
@@ -97,8 +100,8 @@ module.exports = async (cmd) => {
         (await api.query.balances.vesting(encodedAddress)).toString()
       );
 
-      if (vested.toNumber() !== pdVested.locked) {
-        throw new Error(`Vesting Error: Got ${pdVested.locked} but expected ${vested.toNumber()}.`);
+      if (vested.toNumber() !== pdVested.locked/Decimals) {
+        throw new Error(`Vesting Error: Got ${pdVested.locked/Decimals} but expected ${vested.toNumber()}.`);
       } else {
         console.log(`Vesting for ${encodedAddress} checked!`);
       }
