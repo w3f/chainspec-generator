@@ -18,7 +18,7 @@ In order to generate the `kusama.json` chain specification from Ethereum state, 
 
 ```zsh
 $ chmod +x genesis.sh
-$ HTTP_ENDPOINT=<URL> AT_BLOCK=latest ./genesis.sh
+$ HTTP_ENDPOINT=<URL> AT_BLOCK=8405350 ./genesis.sh
 ```
 
 In order to generate using the Ethereum state from a _specific_ block, run the command with the `AT_BLOCK` environmental variable:
@@ -32,5 +32,5 @@ $ HTTP_ENDPOINT=<URL> AT_BLOCK=<ETH_BLOCK_NUM> ./genesis.sh
 Once you have started a chain using the `kusama.json` chain specification, you can also use this tool to verify that the state initialized properly.
 
 ```zsh
-$ yarn verify --atBlock 8698698
+$ yarn verify --atBlock 8405350
 ```
