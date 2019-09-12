@@ -12,7 +12,7 @@
     "/dns4/kusama-bootnode-1.paritytech.net/tcp/30333/p2p/QmV32G18YzenpNFmhqg2n7TtdjYRK7oU6FhLbDL4oRgsbe"
   ],
   "telemetryEndpoints": [],
-  "protocolId": "ksma",
+  "protocolId": "kusama",
   "consensusEngine": null,
   "properties": {
     "ss58Format": 2,
@@ -126,7 +126,7 @@
       },
       "democracy": {},
       "sudo": {
-        "key": "5DhgKm3m7Yead8oaH7ANKhvQzAqoEexnEJTzBkqh9kYf47ou"
+        "key": "5DaRHsojFXcpUfnAGES4rEwhCa2znRzu6LwRV9ZHg1j2fYLW"
       },
       "grandpa": {
         "authorities": []
