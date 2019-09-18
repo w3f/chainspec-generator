@@ -37,12 +37,25 @@ module.exports = async (cmd) => {
 
   const { leftoverTokenHolders, claimers } = getClaimers(tokenHolders);
 
+  let vestedTracker = 0;
+
   // Write to chain spec any accounts that still need to claim.
   leftoverTokenHolders.forEach((value, key) => {
-    ChainSpecTemplate.genesis.runtime.claims.claims.push([
-      key,
-      value.balance.toNumber()
-    ]);
+    const { balance, vested } = value;
+    // First checks if these are supposed to be vested.
+    if (vested.gt(w3Util.toBN(0))) {
+      ChainSpecTemplate.genesis.runtime.claims.claims.push([
+        key,
+        Math.floor(balance.toNumber() / 2),
+      ]);
+
+      vestedTracker += Math.ceil(balance.toNumber() / 2);
+    } else {
+      ChainSpecTemplate.genesis.runtime.claims.claims.push([
+        key,
+        value.balance.toNumber()
+      ]);
+    }
 
     leftoverTokenHolders.delete(key);
   });
@@ -51,6 +64,13 @@ module.exports = async (cmd) => {
     leftoverTokenHolders.size === 0,
     'Token holders have not been cleared.'
   );
+
+  // Add the vested amounts to W3F allocation for manual delivery.
+  ChainSpecTemplate.genesis.runtime.claims.claims.forEach((entry, index) => {
+    if (entry[0] === '0x00b46c2526e227482e2EbB8f4C69E4674d262E75') {
+      ChainSpecTemplate.genesis.runtime.claims.claims[index][1] += vestedTracker;
+    }
+  })
 
   // Fill in the indices with random data first.
   ChainSpecTemplate.genesis.runtime.indices.ids = Array.from(
@@ -67,7 +87,7 @@ module.exports = async (cmd) => {
     const { balance, index, vested } = value;
     const encodedAddress = pdKeyring.encodeAddress(pdUtil.hexToU8a(key));
 
-    // Put in the balane.
+    // Put in the balance.
     ChainSpecTemplate.genesis.runtime.balances.balances.push([
       encodedAddress,
       balance.toNumber(),
