@@ -114,7 +114,7 @@ const getTokenHolderData = async (frozenTokenContract, claimsContract, atBlock =
   // This pulls all Vested events to get the correct vesting amounts.
   (await claimsContract.getPastEvents('Vested', {
     fromBlock: '0',
-    toBlock: atBlock,
+    toBlock: 'latest',  // We make vested track the latest block instead of the cut-off block to support new allocations.
   })).forEach((event) => {
     const { eth, amount } = event.returnValues;
 
