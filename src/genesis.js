@@ -42,7 +42,7 @@ module.exports = async (cmd) => {
   // Write to chain spec any accounts that still need to claim.
   leftoverTokenHolders.forEach((value, key) => {
     const { balance, vested } = value;
-    
+
     // First checks if these are supposed to be vested.
     if (vested.gt(w3Util.toBN(0))) {
       ChainSpecTemplate.genesis.runtime.claims.claims.push([
@@ -109,27 +109,6 @@ module.exports = async (cmd) => {
     // Put in the index.
     ChainSpecTemplate.genesis.runtime.indices.ids[index] = encodedAddress;
   });
-
-  // For testing purposes...
-  if (test) {
-    ChainSpecTemplate.genesis.runtime.staking.stakers.forEach((entry) => {
-      let [ account1, account2, reqBalance ] = entry;
-      ChainSpecTemplate.genesis.runtime.balances.balances.push([
-        account1,
-        reqBalance
-      ], [
-        account2,
-        reqBalance,
-      ]);
-    });
-
-    const mineSudo = '5EvvwXJsJNpVuNd8u3xnYnHDTCD1bxbsY4JtRmra3mqz6hxN';
-    ChainSpecTemplate.genesis.runtime.sudo.key = mineSudo;
-    ChainSpecTemplate.genesis.runtime.balances.balances.push([
-      mineSudo,
-      10000000000,
-    ]);
-  }
 
   // This part is to replace an assigned but unclaimed indices with random addresses, to not mess up ordering.
   const idsLength = ChainSpecTemplate.genesis.runtime.indices.ids.length;
