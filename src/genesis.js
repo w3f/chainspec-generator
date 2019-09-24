@@ -88,11 +88,20 @@ module.exports = async (cmd) => {
     const { balance, index, vested } = value;
     const encodedAddress = pdKeyring.encodeAddress(pdUtil.hexToU8a(key));
 
-    // Put in the balance.
-    ChainSpecTemplate.genesis.runtime.balances.balances.push([
-      encodedAddress,
-      balance.toNumber(),
-    ]);
+    if (encodedAddress == "5DhgKm3m7Yead8oaH7ANKhvQzAqoEexnEJTzBkqh9kYf47ou") {
+      // This was the previous sudo, we take the balance for the temporary sudo.
+      ChainSpecTemplate.genesis.runtime.balances.balances.push([
+        "5DaRHsojFXcpUfnAGES4rEwhCa2znRzu6LwRV9ZHg1j2fYLW",
+        balance.toNumber(),
+      ]);
+
+    } else {
+      // Put in the balance.
+      ChainSpecTemplate.genesis.runtime.balances.balances.push([
+        encodedAddress,
+        balance.toNumber(),
+      ]);
+    }
 
     // Put in the vesting (if it exists).
     if (vested.gt(w3Util.toBN(0))) {
