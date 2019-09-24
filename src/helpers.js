@@ -40,7 +40,7 @@ const getTokenHolderData = async (frozenTokenContract, claimsContract, atBlock =
   // This pulls all Transfer events from FrozenToken in order to do balances accounting.
   (await frozenTokenContract.getPastEvents('Transfer', {
     fromBlock: '0',
-    toBlock: atBlock,
+    toBlock: 'latest',
   })).forEach((event) => {
     const { from, to, value } = event.returnValues;
 

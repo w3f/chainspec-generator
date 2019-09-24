@@ -42,6 +42,7 @@ module.exports = async (cmd) => {
   // Write to chain spec any accounts that still need to claim.
   leftoverTokenHolders.forEach((value, key) => {
     const { balance, vested } = value;
+    
     // First checks if these are supposed to be vested.
     if (vested.gt(w3Util.toBN(0))) {
       ChainSpecTemplate.genesis.runtime.claims.claims.push([
