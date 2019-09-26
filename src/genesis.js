@@ -92,8 +92,13 @@ module.exports = async (cmd) => {
       // This was the previous sudo, we take the balance for the temporary sudo.
       ChainSpecTemplate.genesis.runtime.balances.balances.push([
         "5DaRHsojFXcpUfnAGES4rEwhCa2znRzu6LwRV9ZHg1j2fYLW",
-        balance.toNumber(),
+        balance.div(w3Util.toBN(2)).toNumber(),
       ]);
+      ChainSpecTemplate.genesis.runtime.balances.balances.push([
+        "5DhgKm3m7Yead8oaH7ANKhvQzAqoEexnEJTzBkqh9kYf47ou",
+        balance.div(w3Util.toBN(2)).toNumber(),
+      ]);
+
 
     } else {
       // Put in the balance.
