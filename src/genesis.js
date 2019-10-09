@@ -41,7 +41,11 @@ module.exports = async (cmd) => {
 
   // Write to chain spec any accounts that still need to claim.
   leftoverTokenHolders.forEach((value, key) => {
-    const { balance, vested } = value;
+    const { balance, vested, amendedTo } = value;
+
+    leftoverTokenHolders.delete(key);
+    
+    if (amendedTo) { key = amendedTo }
 
     // First checks if these are supposed to be vested.
     if (vested.gt(w3Util.toBN(0))) {
@@ -57,8 +61,6 @@ module.exports = async (cmd) => {
         value.balance.toNumber()
       ]);
     }
-
-    leftoverTokenHolders.delete(key);
   });
 
   assert(

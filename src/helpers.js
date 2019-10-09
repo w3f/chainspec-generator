@@ -137,6 +137,25 @@ const getTokenHolderData = async (frozenTokenContract, claimsContract, atBlock =
     tokenHolders.set(eth, newData);
   });
 
+  // Pull all the amended addresses and replace the original entry to the amended one.
+  (await claimsContract.getPastEvents('Amended', {
+    fromBlock: '0',
+    toBlock: 'latest',
+  })).forEach((event) => {
+    const { original, amendedTo } = event.returnValues;
+
+    assert(
+      tokenHolders.has(original),
+      `Token Holder set does not contain original ${original} address.`
+    );
+
+    const oldData = tokenHolders.get(original);
+    tokenHolders.set(
+      original,
+      Object.assign(oldData, { amendedTo }),
+    );
+  });
+
   return tokenHolders;
 }
 
