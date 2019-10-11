@@ -170,7 +170,7 @@ const getClaimers = (tokenHolders) => {
   const claimers = new Map();
 
   tokenHolders.forEach((value, key) => {
-    const { balance, index, pubKey, vested } = value;
+    const { balance, index, pubKey, vested, amendedTo } = value;
 
     if (pubKey) {
       leftoverTokenHolders.delete(key);
@@ -193,6 +193,24 @@ const getClaimers = (tokenHolders) => {
           index,
           vested,
         });
+      }
+    }
+
+    else if (amendedTo) {
+      leftoverTokenHolders.delete(key);
+      if (leftoverTokenHolders.has(amendedTo)) {
+        const oldData = leftoverTokenHolders.get(amendedTo);
+        const newBal = oldData.balance.add(balance);
+        const newVested = oldData.vested.add(vested);
+        leftoverTokenHolders.set(amendedTo, {
+          balance: newBal,
+          vested: newVested,
+        });
+      } else {
+        leftoverTokenHolders.set(amendedTo, {
+          balance,
+          vested,
+        })
       }
     }
   });
