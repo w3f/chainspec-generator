@@ -1,6 +1,6 @@
 {
-  "name": "Kusama CC2",
-  "id": "ksmcc2",
+  "name": "Kusama CC3",
+  "id": "ksmcc3",
   "bootNodes": [
     "/dns4/p2p.serinus-0.kusama.network/tcp/30100/p2p/QmeCit3Nif4VfNqrEJsdYHZGcKzRCnZvGxg6hha1iNj4mk",
     "/dns4/p2p.serinus-1.kusama.network/tcp/30100/p2p/QmchDJtEGiEWf7Ag58HNoTg9jSGzxkSZ23VgmF6xiLKKsZ",
@@ -12,7 +12,7 @@
     "/dns4/kusama-bootnode-1.paritytech.net/tcp/30333/p2p/QmV32G18YzenpNFmhqg2n7TtdjYRK7oU6FhLbDL4oRgsbe"
   ],
   "telemetryEndpoints": [],
-  "protocolId": "ksmcc2",
+  "protocolId": "ksmcc3",
   "consensusEngine": null,
   "properties": {
     "ss58Format": 2,
