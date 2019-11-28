@@ -17,6 +17,7 @@ const w3Util = (new Web3()).utils;
 /// Chain Specification Template
 const ChainSpecTemplate = require('../template.json');
 
+// A recent Kusama CC2 block for which to virtually start the vesting. 
 const ElapsedTime = w3Util.toBN(863338);
 
 /// Vesting Length (six months for Kusama)
