@@ -17,10 +17,10 @@ const w3Util = (new Web3()).utils;
 /// Chain Specification Template
 const ChainSpecTemplate = require('../template.json');
 
-const ElapsedTime = 900000;
+const ElapsedTime = utils.toBN(863338);
 
 /// Vesting Length (six months for Kusama)
-const VestingLength = Math.ceil(6 * 30 * 24 * 60 * (60 / 6)); // 6s block times
+const VestingLength =utils.toBN(Math.ceil(6 * 30 * 24 * 60 * (60 / 6))); // 6s block times
 
 /// Seed
 const Seed = w3Util.toBN(w3Util.keccak256('Kusama'));
@@ -105,7 +105,7 @@ module.exports = async (cmd) => {
     if (encodedAddress == "5DhgKm3m7Yead8oaH7ANKhvQzAqoEexnEJTzBkqh9kYf47ou") {
       // This was the previous sudo, we take the balance for the temporary sudo.
       ChainSpecTemplate.genesis.runtime.balances.balances.push([
-        "5DaRHsojFXcpUfnAGES4rEwhCa2znRzu6LwRV9ZHg1j2fYLW",
+        "5C7YSMxbg49dpz7JnKiF5dMudbqTu1ipuCfeiVqdZqSqfJxe",
         balance.div(w3Util.toBN(2)).toNumber(),
       ]);
       ChainSpecTemplate.genesis.runtime.balances.balances.push([
@@ -134,7 +134,7 @@ module.exports = async (cmd) => {
       ChainSpecTemplate.genesis.runtime.balances.vesting.push([
         encodedAddress,
         0,
-        VestingLength - ElapsedTime,
+        VestingLength.sub(ElapsedTime).toNumber(),
         liquid.add(alreadyVested).toNumber(),
       ]);
     }
