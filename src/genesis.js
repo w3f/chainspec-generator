@@ -17,7 +17,7 @@ const w3Util = (new Web3()).utils;
 /// Chain Specification Template
 const ChainSpecTemplate = require('../template.json');
 
-const ElapsedTime = 900000 * 6;
+const ElapsedTime = 900000;
 
 /// Vesting Length (six months for Kusama)
 const VestingLength = Math.ceil(6 * 30 * 24 * 60 * (60 / 6)); // 6s block times
