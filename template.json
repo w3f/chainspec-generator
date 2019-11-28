@@ -121,6 +121,7 @@
         "invulnerables": [],
         "currentEra": 0,
         "forceEra": "ForceNone",
+        "canceledPayout": 0,
         "slashRewardFraction": 100000000,
         "stakers": []
       },
