@@ -75,6 +75,18 @@ module.exports = async (cmd) => {
     }
   })
 
+  // SPECIAL CLAIMS ADDED IN CC2 AND BROUGHT INTO CC3 GENESIS
+  // https://polkascan.io/pre/kusama-cc2/transaction/0x699235a8a5dc872112daae31bf78152e2569a6c8a3559372bd6f9646d47468c9
+  ChainSpecTemplate.genesis.runtime.claims.claims.push([
+    '0xb5cafa15060dd0282c5b7232de338326ac6c2369',
+    100000 // Post processing adds 9 decimals
+  ]);
+  // https://polkascan.io/pre/kusama-cc2/transaction/0x7fab7549e288668cc6323b15ded077d4a063e9b0280c23e6b41e043a21d17498
+  ChainSpecTemplate.genesis.runtime.claims.claims.push([
+    '0x0628dae391a37ccb6ccae7e6b6495c2622d69cda',
+    4480633 // post processing adds 9 decimals
+  ]);
+
   // Fill in the indices with random data first.
   ChainSpecTemplate.genesis.runtime.indices.ids = Array.from(
     { length: 925 },
