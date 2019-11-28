@@ -17,10 +17,10 @@ const w3Util = (new Web3()).utils;
 /// Chain Specification Template
 const ChainSpecTemplate = require('../template.json');
 
-const ElapsedTime = utils.toBN(863338);
+const ElapsedTime = w3Util.toBN(863338);
 
 /// Vesting Length (six months for Kusama)
-const VestingLength =utils.toBN(Math.ceil(6 * 30 * 24 * 60 * (60 / 6))); // 6s block times
+const VestingLength = w3Util.toBN(Math.ceil(6 * 30 * 24 * 60 * (60 / 6))); // 6s block times
 
 /// Seed
 const Seed = w3Util.toBN(w3Util.keccak256('Kusama'));
