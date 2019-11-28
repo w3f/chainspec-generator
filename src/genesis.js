@@ -17,6 +17,8 @@ const w3Util = (new Web3()).utils;
 /// Chain Specification Template
 const ChainSpecTemplate = require('../template.json');
 
+const ElapsedTime = 900000 * 6;
+
 /// Vesting Length (six months for Kusama)
 const VestingLength = Math.ceil(6 * 30 * 24 * 60 * (60 / 6)); // 6s block times
 
@@ -44,19 +46,6 @@ module.exports = async (cmd) => {
     const { balance, vested } = value;
 
     leftoverTokenHolders.delete(key);
-    
-    // if (amendedTo) { key = amendedTo; }
-    // if (leftoverTokenHolders.has(key)) {
-    //   console.log(key);
-    //   const oldData = leftoverTokenHolders.get(key);
-    //   const newBal = oldData.balance.add(balance);
-    //   const newVested = oldData.vested.add(vested);
-    //   leftoverTokenHolders.set(key, {
-    //     balance: newBal,
-    //     vested: newVested,
-    //   });
-    //   return;
-    // }
 
     // First checks if these are supposed to be vested.
     if (vested.gt(w3Util.toBN(0))) {
@@ -124,12 +113,17 @@ module.exports = async (cmd) => {
     // Put in the vesting (if it exists).
     if (vested.gt(w3Util.toBN(0))) {
       const liquid = balance.sub(vested);
+
+      // Now take into account elapsed.
+      const locked = balance.sub(liquid);
+      const perBlock = locked.div(VestingLength);
+      const alreadyVested = perBlock.mul(ElapsedTime);
       
       ChainSpecTemplate.genesis.runtime.balances.vesting.push([
         encodedAddress,
         0,
-        VestingLength,
-        liquid.toNumber(),
+        VestingLength - ElapsedTime,
+        liquid.add(alreadyVested).toNumber(),
       ]);
     }
 
