@@ -17,6 +17,8 @@ const w3Util = (new Web3()).utils;
 /// Chain Specification Template
 const ChainSpecTemplate = require('../template.json');
 
+const ElapsedTime = 900000;
+
 /// Vesting Length (six months for Kusama)
 const VestingLength = Math.ceil(6 * 30 * 24 * 60 * (60 / 6)); // 6s block times
 
@@ -44,19 +46,6 @@ module.exports = async (cmd) => {
     const { balance, vested } = value;
 
     leftoverTokenHolders.delete(key);
-    
-    // if (amendedTo) { key = amendedTo; }
-    // if (leftoverTokenHolders.has(key)) {
-    //   console.log(key);
-    //   const oldData = leftoverTokenHolders.get(key);
-    //   const newBal = oldData.balance.add(balance);
-    //   const newVested = oldData.vested.add(vested);
-    //   leftoverTokenHolders.set(key, {
-    //     balance: newBal,
-    //     vested: newVested,
-    //   });
-    //   return;
-    // }
 
     // First checks if these are supposed to be vested.
     if (vested.gt(w3Util.toBN(0))) {
@@ -85,6 +74,18 @@ module.exports = async (cmd) => {
       ChainSpecTemplate.genesis.runtime.claims.claims[index][1] += vestedTracker;
     }
   })
+
+  // SPECIAL CLAIMS ADDED IN CC2 AND BROUGHT INTO CC3 GENESIS
+  // https://polkascan.io/pre/kusama-cc2/transaction/0x699235a8a5dc872112daae31bf78152e2569a6c8a3559372bd6f9646d47468c9
+  ChainSpecTemplate.genesis.runtime.claims.claims.push([
+    '0xb5cafa15060dd0282c5b7232de338326ac6c2369',
+    100000 // Post processing adds 9 decimals
+  ]);
+  // https://polkascan.io/pre/kusama-cc2/transaction/0x7fab7549e288668cc6323b15ded077d4a063e9b0280c23e6b41e043a21d17498
+  ChainSpecTemplate.genesis.runtime.claims.claims.push([
+    '0x0628dae391a37ccb6ccae7e6b6495c2622d69cda',
+    4480633 // post processing adds 9 decimals
+  ]);
 
   // Fill in the indices with random data first.
   ChainSpecTemplate.genesis.runtime.indices.ids = Array.from(
@@ -124,12 +125,17 @@ module.exports = async (cmd) => {
     // Put in the vesting (if it exists).
     if (vested.gt(w3Util.toBN(0))) {
       const liquid = balance.sub(vested);
+
+      // Now take into account elapsed.
+      const locked = balance.sub(liquid);
+      const perBlock = locked.div(VestingLength);
+      const alreadyVested = perBlock.mul(ElapsedTime);
       
       ChainSpecTemplate.genesis.runtime.balances.vesting.push([
         encodedAddress,
         0,
-        VestingLength,
-        liquid.toNumber(),
+        VestingLength - ElapsedTime,
+        liquid.add(alreadyVested).toNumber(),
       ]);
     }
 
