@@ -18,11 +18,11 @@ with open('kusama.tmp.json', encoding='utf-8') as f:
         claims_w_decimals = claims_item[1] * DECIMALS
         chain_spec['genesis']['runtime']['claims']['claims'][i] = [claims_item[0], claims_w_decimals]
 
-    vesting_array = chain_spec['genesis']['runtime']['balances']['vesting']
+    vesting_array = chain_spec['genesis']['runtime']['vesting']['vesting']
     for i in range(len(vesting_array)):
-        vesting_item = chain_spec['genesis']['runtime']['balances']['vesting'][i]
+        vesting_item = chain_spec['genesis']['runtime']['vesting']['vesting'][i]
         vesting_w_decimals = vesting_item[3] * DECIMALS
-        chain_spec['genesis']['runtime']['balances']['vesting'][i] = [ vesting_item[0], vesting_item[1], vesting_item[2], vesting_w_decimals]
+        chain_spec['genesis']['runtime']['vesting']['vesting'][i] = [ vesting_item[0], vesting_item[1], vesting_item[2], vesting_w_decimals]
 
     with open ('kusama.json', 'w', encoding='utf-8') as f2:
         json.dump(chain_spec, f2, ensure_ascii=False, indent=2)

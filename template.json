@@ -19,6 +19,8 @@
     "tokenDecimals": 12,
     "tokenSymbol": "KSM"
   },
+  "forkBlocks": null,
+  "badBlocks": null,
   "genesis": {
     "runtime": {
       "system": {
@@ -29,8 +31,7 @@
         "authorities": []
       },
       "balances": {
-        "balances": [],
-        "vesting": []
+        "balances": []
       },
       "collectiveInstance1": {
         "members": [],
@@ -49,7 +50,7 @@
         "phantom": null
       },
       "indices": {
-        "ids": []
+        "indices": []
       },
       "session": {
         "keys": [
@@ -116,10 +117,10 @@
         ]
       },
       "staking": {
+        "historyDepth": 84,
         "validatorCount": 50,
         "minimumValidatorCount": 4,
         "invulnerables": [],
-        "currentEra": 0,
         "forceEra": "ForceNone",
         "canceledPayout": 0,
         "slashRewardFraction": 100000000,
@@ -146,7 +147,11 @@
         "keys": []
       },
       "claims": {
-        "claims": []
+        "claims": [],
+        "vesting": []
+      },
+      "vesting": {
+        "vesting": []
       }
     }
   }
