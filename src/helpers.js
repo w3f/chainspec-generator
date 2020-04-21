@@ -25,7 +25,7 @@ const getW3 = (providerURL = InfuraMainnet) => {
   return new Web3(provider);
 }
 
-const getClaimsContract = (w3, claimsABI = ClaimsABI, address = KusamaClaims) => {
+const getClaimsContract = (w3, address = KusamaClaims, claimsABI = ClaimsABI,) => {
   return new w3.eth.Contract(claimsABI, address);
 }
 

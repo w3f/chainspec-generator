@@ -1,0 +1,93 @@
+{
+    "name": "Polkadot CC1",
+    "id": "polkadot_cc1",
+    "chainType": "Live",
+    "bootNodes": [],
+    "telemetryEndpoints": [],
+    "protocolId": "dot",
+    "consensusEngine": null,
+    "properties": {
+        "ss58Format": 0,
+        "tokenDecimals": 12,
+        "tokenSymbol": "DOT"
+    },
+    "forkBlocks": null,
+    "badBlocks": null,
+    "genesis": {
+        "runtime": {
+            "system": {
+                "changesTrieConfig": null,
+                "code": ""
+            },
+            "babe": {
+                "authorities": []
+              },
+              "indices": {
+                "indices": []
+              },
+              "balances": {
+                "balances": [
+                  [
+                    "5CASb3ZcaJWARGSoZS42JYU1EbKnksJ5Fd4GyhiBa1kbaFAh",
+                    1000000000000000000
+                  ]
+                ]
+              },
+              "staking": {
+                "historyDepth": 84,
+                "validatorCount": 50,
+                "minimumValidatorCount": 4,
+                "invulnerables": [],
+                "forceEra": "ForceNone",
+                "slashRewardFraction": 100000000,
+                "canceledPayout": 0,
+                "stakers": []
+              },
+              "session": {
+                "keys": []
+              },
+              "grandpa": {
+                "authorities": []
+              },
+              "imOnline": {
+                "keys": []
+              },
+              "authorityDiscovery": {
+                "keys": []
+              },
+              "democracy": {},
+              "collectiveInstance1": {
+                "phantom": null,
+                "members": []
+              },
+              "collectiveInstance2": {
+                "phantom": null,
+                "members": []
+              },
+              "electionsPhragmen": {
+                "members": []
+              },
+              "membershipInstance1": {
+                "members": [],
+                "phantom": null
+              },
+              "parachains": {
+                "authorities": []
+              },
+              "registrar": {
+                "parachains": [],
+                "phdata": null
+              },
+              "claims": {
+                "vesting": [],
+                "claims": []
+              },
+              "vesting": {
+                "vesting": []
+              },
+              "sudo": {
+                "key": "5CASb3ZcaJWARGSoZS42JYU1EbKnksJ5Fd4GyhiBa1kbaFAh"
+              }
+        }
+    }
+}

@@ -1,6 +1,7 @@
-# kusama-genesis-spec
+# Genesis Chainspec Generator
 
-CLI for generating the Kusama chain specification from Ethereum state.
+CLI for generating the Polkadot and Kusama chain specification from the state of
+the DOT Allocation and Claims contracts.
 
 ## Running
 

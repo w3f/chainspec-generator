@@ -14,9 +14,6 @@ const {
 
 const w3Util = (new Web3()).utils;
 
-/// Chain Specification Template
-const ChainSpecTemplate = require('../template.json');
-
 // A recent Kusama CC2 block for which to virtually start the vesting. 
 const ElapsedTime = w3Util.toBN(863338);
 
@@ -30,13 +27,18 @@ const Seed = w3Util.toBN(w3Util.keccak256('Kusama'));
 let count = 0;
 
 module.exports = async (cmd) => {
-  const { atBlock, endpoint, test } = cmd;
+  const { atBlock, claims, endpoint, template, tmpOutput } = cmd;
+  const ChainSpecTemplate = require(template);
 
   const w3 = getW3(endpoint);
-  const kusamaClaims = getClaimsContract(w3);
+  const claimsContract = getClaimsContract(w3, claims);
   const dotAllocationIndicator = getFrozenTokenContract(w3);
 
-  const tokenHolders = await getTokenHolderData(dotAllocationIndicator, kusamaClaims, atBlock);
+  const tokenHolders = await getTokenHolderData(
+    dotAllocationIndicator, 
+    claimsContract, 
+    atBlock
+  );
 
   const { leftoverTokenHolders, claimers } = getClaimers(tokenHolders);
 
@@ -155,7 +157,7 @@ module.exports = async (cmd) => {
   }
 
   fs.writeFileSync(
-    'kusama.tmp.json',
+    tmpOutput,
     JSON.stringify(ChainSpecTemplate, null, 2),
   );
 
