@@ -484,7 +484,7 @@ export const getTokenHolderData = async (
 
   // TODO: Add search for increaseVested events.
   for (const event of vestedEvents) {
-    console.log(JSON.stringify(event));
+    // console.log(JSON.stringify(event));
     const { eth, amount } = event.returnValues;
 
     if (!tokenHolders.has(eth)) {

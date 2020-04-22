@@ -18,8 +18,7 @@ const w3Util = new Web3().utils;
 // NOTE: Assumes 6 second block times.
 const VestingLength = w3Util.toBN(Math.ceil(24 * 30 * 24 * 60 * (60 / 6)));
 
-/// Address counter
-const count = 0;
+const Decimals = 10 ** 9;
 
 const generateGenesis = async (cmd: any) => {
   const { atBlock, claims, endpoint, template, test, tmpOutput } = cmd;
@@ -45,10 +44,12 @@ const generateGenesis = async (cmd: any) => {
     holders.delete(ethAddr);
 
     if (vested.gt(w3Util.toBN(0))) {
-      const perBlock = balance.divRound(VestingLength);
+      const perBlock = vested
+        .mul(w3Util.toBN(Decimals))
+        .divRound(VestingLength);
       chainspec.genesis.runtime.claims.vesting.push([
         ethAddr,
-        [balance.toNumber(), perBlock.toNumber(), 0],
+        [vested.toNumber(), perBlock.toNumber(), 0],
       ]);
     }
 
