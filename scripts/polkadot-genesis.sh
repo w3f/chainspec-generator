@@ -2,7 +2,7 @@
 
 if [ -z "$AT_BLOCK" ]
 then
-   AT_BLOCK="8405350"
+   AT_BLOCK="latest"
 fi
 if [ -z "$HTTP_ENDPOINT" ]
 then
@@ -15,7 +15,7 @@ fi
 
 yarn genesis --endpoint $HTTP_ENDPOINT --atBlock $AT_BLOCK\
  --claims $CLAIMS_CONTRACT --tmpOutput polkadot.tmp.json\
- --template templates.polkadot.template.json
+ --template templates/polkadot.template.json --test
 
 python3 post_processing.py polkadot.tmp.json
 

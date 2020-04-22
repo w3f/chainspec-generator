@@ -14,14 +14,9 @@ const {
 
 const w3Util = (new Web3()).utils;
 
-// A recent Kusama CC2 block for which to virtually start the vesting. 
-const ElapsedTime = w3Util.toBN(863338);
-
-/// Vesting Length (six months for Kusama)
-const VestingLength = w3Util.toBN(Math.ceil(6 * 30 * 24 * 60 * (60 / 6))); // 6s block times
-
-/// Seed
-const Seed = w3Util.toBN(w3Util.keccak256('Kusama'));
+// Vesting Length is twenty-four months on Polkadot.
+// NOTE: Assumes 6 second block times. 
+const VestingLength = w3Util.toBN(Math.ceil(24 * 30 * 24 * 60 * (60 / 6)));
 
 /// Address counter
 let count = 0;
