@@ -2,7 +2,14 @@
     "name": "Polkadot CC1",
     "id": "polkadot_cc1",
     "chainType": "Live",
-    "bootNodes": [],
+    "bootNodes": [
+      "/dns4/p2p.cc1-0.polkadot.network/tcp/30100/p2p/QmXbwgCiVSrx2Wn8vP6TAkZdXHKp6ghD4HecdBgh26CLsq",
+      "/dns4/p2p.cc1-1.polkadot.network/tcp/30100/p2p/Qmb6pP2F3GvvW95zu5gqoYizogYXzfuNVRVtDtKrikhAmJ",
+      "/dns4/p2p.cc1-2.polkadot.network/tcp/30100/p2p/QmT2ZqnAyAebGHfhHxZNTGt51ECUf8Dme5B3KqYopb2wC5",
+      "/dns4/p2p.cc1-3.polkadot.network/tcp/30100/p2p/QmWmW3MbGUEKtmYMYC4AtRsLJwmNFDEQBxTURLCb6XRaN2",
+      "/dns4/p2p.cc1-4.polkadot.network/tcp/30100/p2p/QmWhZRrBEHQuVRZUevBi6gs84fmRWixNjeWqncHUydaKky",
+      "/dns4/p2p.cc1-5.polkadot.network/tcp/30100/p2p/QmNpfpmnhLLjkHnebRRecWu6CUnMYiJ3jTeWk4ffxpxxsd"
+    ],
     "telemetryEndpoints": [],
     "protocolId": "dot",
     "consensusEngine": null,
@@ -44,7 +51,74 @@
                 "stakers": []
               },
               "session": {
-                "keys": []
+                "keys": [
+                  [
+                    "5DLpeXxQzXCxksPntpGA7X93epayCQtVfJkzZfrG54B37DkR",
+                    "5DLpeXxQzXCxksPntpGA7X93epayCQtVfJkzZfrG54B37DkR",
+                    {
+                      "grandpa": "5H6e5p2EgPz8AFk3Dn3ajjh5uA7YcpqtCaTxoV4mVvASVGMj",
+                      "babe": "5HimLgeLt26Z4pd2KnZevv91BF6F468qqUezbJX7B4LaNbwF",
+                      "parachain_validator": "5E2hVDSc15Deg3K1LFhxPsttgtEwkwH1gp19JXhtfXcE7bYe",
+                      "im_online": "5ETmkubRbr74zUHjrreKhH1XhY7Z5Ws5G6x1LrSAxJYkXPro",
+                      "authority_discovery": "5H9FGUpE6rhqHBc2JVVZGCCPULixqXTPXYeX5k5RJouAWTUM"
+                    }
+                  ],
+                  [
+                    "5H3wyffZcwhZD1CAQTGWTmCHSmdwk5YnYo8XPAZrieQ6Fevm",
+                    "5H3wyffZcwhZD1CAQTGWTmCHSmdwk5YnYo8XPAZrieQ6Fevm",
+                    {
+                      "grandpa": "5Di3QpL3NYonmmGAi4F5NEpPAmnrKmBqyxSZafh5CmKvmCjR",
+                      "babe": "5GpPQK7THNuvYJGuFLmg1dpPNSDZdkeUD2FL4ms6Kr7AUuHo",
+                      "parachain_validator": "5DS1vV2H985zj8wP3bWPHGYnKe5SKdi6CbKPhfLTVSH1e7HJ",
+                      "im_online": "5DSRtTkZqYCeCeEn1G4pbvaDiy8ZupbVQhrrBk8LsMGwUR7P",
+                      "authority_discovery": "5FChA6zyaRsoepf79Q1LiXGixT9kr8t5R37c4HebWb58g5Vx"
+                    }
+                  ],
+                  [
+                    "5E493CdFHsevyfFdKEaqxsbSykzwgUUJqKDYTAgZ87KFLN1V",
+                    "5E493CdFHsevyfFdKEaqxsbSykzwgUUJqKDYTAgZ87KFLN1V",
+                    {
+                      "grandpa": "5HeoFncRDimR3pFoAWrFpxmT5X78pTgYbCH66tS8id45hAqK",
+                      "babe": "5Gh7usz5eSgAW6CiLjjh8mvEpuxjfPK2CLJW1vL9D17o2vNf",
+                      "parachain_validator": "5FjbB9Q7R8r7pEwoxwf89HJHD2LEwW6zWhDTsDJVapShbbFP",
+                      "im_online": "5ECRJG8gf3WyD9eZti25D3xgzG5ms6XzkQKz9nv4BqSqtekr",
+                      "authority_discovery": "5CYAUTJkP36cTkxRUrTqotXcXxdQit49FFoCLAG4xveH5sNt"
+                    }
+                  ],
+                  [
+                    "5FAF9xi9DqTmva6mu2GhpKRScWX5UXPc5Hsn3oPFQ94akTg9",
+                    "5FAF9xi9DqTmva6mu2GhpKRScWX5UXPc5Hsn3oPFQ94akTg9",
+                    {
+                      "grandpa": "5ChXU9KXMfiqi7Ayx4HLaj4yNxgva5vWuxAW1h2mnkEorD1e",
+                      "babe": "5ECVAeu7xFwDxfRgyhPLs5giRUZCnDA3vWDLGF51LLmZTn7w",
+                      "parachain_validator": "5DtnwLbpKwPKXBdzbdyR9mqL3Tq3P1ypFo4m2j7PitNhz6oQ",
+                      "im_online": "5EWrJxWahVzJ1aEdQ2jU31zu3MgeK1e8pCY5t4v32DtqCDwt",
+                      "authority_discovery": "5EhkPzq4KbT3WmSuwfpd4RSNUuKD9vE3vmfzZvKs7yWCg1jK"
+                    }
+                  ],
+                  [
+                    "5F1EvWx4GQn4Z645tcJPc1X5Va3ykbcGwsTcEG5pgnXZhfe1",
+                    "5F1EvWx4GQn4Z645tcJPc1X5Va3ykbcGwsTcEG5pgnXZhfe1",
+                    {
+                      "grandpa": "5ER8k9qGHYrki5KrVvvpjq4mNit1GttYs987m2Js4TSCjS6H",
+                      "babe": "5EHUkMx5GKm4jQaQoZ2QkMDbaw9LBvkjWn5rvyELhHpfwFt1",
+                      "parachain_validator": "5FZZ6JgJzzXuHWiCUbqzjhrdwN3wXYP56qeCeihjLbbkboDt",
+                      "im_online": "5DSfdiNqgxPYGBznN2vbMYNBWv7WeYisLFQtsXY7JJqx5ZDD",
+                      "authority_discovery": "5CJTXHzxJsV2LRiaUWTCmVw9CxjdN9eCiJhnX9QqFph9xZKS"
+                    }
+                  ],
+                  [
+                    "5HBMw7ZBykckshSC16GVN7CPk9sLebn2FWUmDGczi8vuVseY",
+                    "5HBMw7ZBykckshSC16GVN7CPk9sLebn2FWUmDGczi8vuVseY",
+                    {
+                      "grandpa": "5FHMA9jMwpdcG2FQaqcNMUhCPooYsg1yz4mwHai2xwungE31",
+                      "babe": "5EWjdTSXx1XRkFf6WoHAdggokCYcn2XzyEq9ho5ZncaueFjR",
+                      "parachain_validator": "5Gjq6kaNLja8uXkj8hLswb3eN6cJEt59eMGbJv4AHX6Y9Nbr",
+                      "im_online": "5G4GYqZmfA9pNtCAXJLhA2qTQLj5f8W9Y8omqr2BfoDuxoaJ",
+                      "authority_discovery": "5DnPvwo4ckKTiScZdnfrUzQb4YKZVfK3EoLiRLJUsJ3NJMRH"
+                    }
+                  ]
+                ]
               },
               "grandpa": {
                 "authorities": []
