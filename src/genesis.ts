@@ -78,10 +78,6 @@ const generateGenesis = async (cmd: any) => {
     if (vested.gt(w3Util.toBN(0))) {
       const liquid = balance.sub(vested);
 
-      // Now take into account time elapsed.
-      // const locked = balance.sub(liquid);
-      // const perBlock = locked.divRound(VestingLength);
-
       chainspec.genesis.runtime.vesting.vesting.push([
         encoded,
         0,
