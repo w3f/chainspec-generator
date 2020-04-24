@@ -22,7 +22,8 @@ const w3Util = new Web3().utils;
 
 /// Ethereum Mainnet Contracts
 const DOTAllocationIndicator = "0xb59f67A8BfF5d8Cd03f6AC17265c550Ed8F33907";
-const KusamaClaims = "0x9a1B58399EdEBd0606420045fEa0347c24fB86c2";
+const KusamaGenesisHash =
+  "0xb0a8d493285c2df73290dfb7e61f870f17b41801197a149ca93654499ea3dafe";
 
 const DotClaimsABI = [
   {
@@ -382,7 +383,7 @@ export const getW3 = (providerURL = InfuraMainnet): Web3 => {
 
 export const getClaimsContract = (
   w3: any,
-  address = KusamaClaims,
+  address: string,
   claimsABI = DotClaimsABI
 ): Contract => {
   return new w3.eth.Contract(claimsABI, address);
@@ -394,6 +395,20 @@ export const getFrozenTokenContract = (
   address = DOTAllocationIndicator
 ): Contract => {
   return new w3.eth.Contract(frozenTokenABI, address);
+};
+
+export const detectASCII = (pubkey: string): boolean => {
+  const chars = [];
+  for (let i = 0; i < pubkey.length; i += 2) {
+    const cur = pubkey.slice(i, i + 2);
+    if (cur === "0x") continue;
+    else chars.push(String.fromCharCode(Number("0x" + cur)));
+  }
+
+  const maybeAddress = chars.join("");
+  const isASCII = /^[a-z0-9]+$/i.test(maybeAddress);
+
+  return isASCII;
 };
 
 export const getTokenHolderData = async (
@@ -542,6 +557,19 @@ export const getClaimers = (
     const { balance, index, pubKey, vested, amendedTo } = holderData;
 
     if (!!pubKey) {
+      if (detectASCII(pubKey)) {
+        // Ignore this claim - it was due to a mistake during the pre-genesis
+        // claiming process.
+        console.log(`Ignoring claim for full ASCII pubkey: ${pubKey}`);
+        continue;
+      }
+      if (pubKey === KusamaGenesisHash) {
+        // Another mistake made during pre-genesis claims - someone claimed
+        // to the Kusama genesis block hash instead of a public key.
+        console.log(`Ignoring claim for Kusama genesis hash: ${pubKey}`);
+        continue;
+      }
+
       leftoverTokenHolders.delete(address);
       if (claimers.has(pubKey)) {
         // A claim has already been made to this pubkey, we augment
