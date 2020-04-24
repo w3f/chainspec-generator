@@ -59,9 +59,11 @@ const generateGenesis = async (cmd: any) => {
   assert(holders.size === 0, "Holders should be cleared.");
 
   for (const [pubkey, claimer] of claimers) {
+    // Always should have a pubkey if we've made it this far.
     if (!pubkey) {
       throw `No pubkey, ${JSON.stringify(claimer)}`;
     }
+
     const { balance, index, vested } = claimer;
     const encoded = Keyring.encodeAddress(Util.hexToU8a(pubkey), 0);
 
