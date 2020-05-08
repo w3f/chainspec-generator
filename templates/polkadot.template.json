@@ -8,7 +8,7 @@
     "consensusEngine": null,
     "properties": {
         "ss58Format": 0,
-        "tokenDecimals": 12,
+        "tokenDecimals": 10,
         "tokenSymbol": "DOT"
     },
     "forkBlocks": null,
