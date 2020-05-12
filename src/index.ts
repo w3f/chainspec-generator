@@ -1,6 +1,7 @@
 import program from "commander";
 
 import generateGenesis from "./genesis";
+import generateSampleStatements from "./generateSampleStatements";
 import verify from "./verify";
 
 /// Infura Endpoint
@@ -31,8 +32,37 @@ program
     "--tmpOutput <file>",
     "The filepath to drop the temporary output, to get sent through post-processing."
   )
+  .option(
+    "--statements <file>",
+    "The file containing the list of statements. Formatted <address>,<statement> on each line.",
+    "statements.sample.csv"
+  )
   .option("--test", "Enable testing mode.", false)
   .action(generateGenesis);
+
+program
+  .command("generateSampleStatements")
+  .option(
+    "--atBlock <num>",
+    "The Ethereum block number to pull state from.",
+    "latest"
+  )
+  .option(
+    "--claims <contract>",
+    "The address of the Claims contract.",
+    "0xa2CBa0190290aF37b7e154AEdB06d16100Ff5907"
+  )
+  .option(
+    "--endpoint <httpEndpoint>",
+    "The HTTP endpoint for the Ethereum node to connect to.",
+    InfuraMainnet
+  )
+  .option(
+    "--output <file>",
+    "The output file for the sample statements list.",
+    "statements.sample.csv"
+  )
+  .action(generateSampleStatements);
 
 /** Verify genesis state */
 program

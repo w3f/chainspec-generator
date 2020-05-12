@@ -21,10 +21,29 @@ const VestingLength = w3Util.toBN(Math.ceil(24 * 30 * 24 * 60 * (60 / 6)));
 const Decimals = 10 ** 9;
 
 const generateGenesis = async (cmd: any) => {
-  const { atBlock, claims, endpoint, template, test, tmpOutput } = cmd;
+  const {
+    atBlock,
+    claims,
+    endpoint,
+    template,
+    test,
+    tmpOutput,
+    statements,
+  } = cmd;
+
   const chainspec = JSON.parse(
     fs.readFileSync(template, { encoding: "utf-8" })
   );
+
+  const statementsArray = fs
+    .readFileSync(statements, { encoding: "utf-8" })
+    .split("\n");
+
+  const statementMap = new Map();
+  for (const line of statementsArray) {
+    const [addr, statement] = line.split(",");
+    statementMap.set(addr, statement);
+  }
 
   const w3 = getW3(endpoint);
   const claimsContract = getClaimsContract(w3, claims);
@@ -40,6 +59,10 @@ const generateGenesis = async (cmd: any) => {
 
   for (const [ethAddr, holder] of holders) {
     const { balance, vested } = holder;
+
+    const statement = statementMap.has(ethAddr)
+      ? statementMap.get(ethAddr)
+      : null;
 
     holders.delete(ethAddr);
 
@@ -57,7 +80,7 @@ const generateGenesis = async (cmd: any) => {
       ethAddr,
       balance.toNumber(),
       null,
-      "Default",
+      statement,
     ]);
   }
 
@@ -72,11 +95,15 @@ const generateGenesis = async (cmd: any) => {
     const { balance, index, vested, ethAddress } = claimer;
     const encoded = Keyring.encodeAddress(Util.hexToU8a(pubkey), 0);
 
+    const statement = statementMap.has(encoded)
+      ? statementMap.get(encoded)
+      : null;
+
     chainspec.genesis.runtime.claims.claims.push([
       ethAddress,
       balance.toNumber(),
       encoded,
-      "Default",
+      statement,
     ]);
 
     if (vested.gt(w3Util.toBN(0))) {
