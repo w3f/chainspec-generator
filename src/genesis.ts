@@ -26,8 +26,6 @@ const generateGenesis = async (cmd: any) => {
     fs.readFileSync(template, { encoding: "utf-8" })
   );
 
-  const asd = "Default";
-
   const w3 = getW3(endpoint);
   const claimsContract = getClaimsContract(w3, claims);
   const dotAllocationIndicator = getFrozenTokenContract(w3);
@@ -59,7 +57,7 @@ const generateGenesis = async (cmd: any) => {
       ethAddr,
       balance.toNumber(),
       null,
-      asd,
+      "Default",
     ]);
   }
 
@@ -78,11 +76,10 @@ const generateGenesis = async (cmd: any) => {
       ethAddress,
       balance.toNumber(),
       encoded,
-      asd,
+      "Default",
     ]);
 
     if (vested.gt(w3Util.toBN(0))) {
-      // const liquid = balance.sub(vested);
       const perBlock = vested
         .mul(w3Util.toBN(Decimals))
         .divRound(VestingLength);
