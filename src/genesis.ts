@@ -21,10 +21,29 @@ const VestingLength = w3Util.toBN(Math.ceil(24 * 30 * 24 * 60 * (60 / 6)));
 const Decimals = 10 ** 9;
 
 const generateGenesis = async (cmd: any) => {
-  const { atBlock, claims, endpoint, template, test, tmpOutput } = cmd;
+  const {
+    atBlock,
+    claims,
+    endpoint,
+    template,
+    test,
+    tmpOutput,
+    statements,
+  } = cmd;
+
   const chainspec = JSON.parse(
     fs.readFileSync(template, { encoding: "utf-8" })
   );
+
+  const statementsArray = fs
+    .readFileSync(statements, { encoding: "utf-8" })
+    .split("\n");
+
+  const statementMap = new Map();
+  for (const line of statementsArray) {
+    const [addr, statement] = line.split(",");
+    statementMap.set(addr, statement);
+  }
 
   const w3 = getW3(endpoint);
   const claimsContract = getClaimsContract(w3, claims);
@@ -41,6 +60,10 @@ const generateGenesis = async (cmd: any) => {
   for (const [ethAddr, holder] of holders) {
     const { balance, vested } = holder;
 
+    const statement = statementMap.has(ethAddr)
+      ? statementMap.get(ethAddr)
+      : null;
+
     holders.delete(ethAddr);
 
     if (vested.gt(w3Util.toBN(0))) {
@@ -53,7 +76,12 @@ const generateGenesis = async (cmd: any) => {
       ]);
     }
 
-    chainspec.genesis.runtime.claims.claims.push([ethAddr, balance.toNumber()]);
+    chainspec.genesis.runtime.claims.claims.push([
+      ethAddr,
+      balance.toNumber(),
+      null,
+      statement,
+    ]);
   }
 
   assert(holders.size === 0, "Holders should be cleared.");
@@ -64,27 +92,28 @@ const generateGenesis = async (cmd: any) => {
       throw `No pubkey, ${JSON.stringify(claimer)}`;
     }
 
-    const { balance, index, vested } = claimer;
+    const { balance, index, vested, ethAddress } = claimer;
     const encoded = Keyring.encodeAddress(Util.hexToU8a(pubkey), 0);
 
-    // if (encoded == "12dyU6JpyKv44fp6EkDNTrkZqnqSvxWvJoCUM3q3hqaBEYGv") {
-    // This is the sudo allocation, move it to the current sudo's balance.
-    // chainspec.genesis.runtime.balances.balances.push(["", balance]);
-    // }
+    const statement = statementMap.has(encoded)
+      ? statementMap.get(encoded)
+      : null;
 
-    chainspec.genesis.runtime.balances.balances.push([
-      encoded,
+    chainspec.genesis.runtime.claims.claims.push([
+      ethAddress,
       balance.toNumber(),
+      encoded,
+      statement,
     ]);
 
     if (vested.gt(w3Util.toBN(0))) {
-      const liquid = balance.sub(vested);
+      const perBlock = vested
+        .mul(w3Util.toBN(Decimals))
+        .divRound(VestingLength);
 
-      chainspec.genesis.runtime.vesting.vesting.push([
-        encoded,
-        0,
-        VestingLength.toNumber(),
-        liquid.toNumber(),
+      chainspec.genesis.runtime.claims.vesting.push([
+        ethAddress,
+        [vested.toNumber(), perBlock.toNumber(), 0],
       ]);
     }
 
@@ -117,6 +146,7 @@ const generateGenesis = async (cmd: any) => {
 
   fs.writeFileSync(tmpOutput, JSON.stringify(chainspec, null, 2));
   console.log(`Written to ${tmpOutput}`);
+  process.exit(0);
 };
 
 export default generateGenesis;

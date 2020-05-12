@@ -1,5 +1,10 @@
 import BN from "bn.js";
 import Web3 from "web3";
+import * as fs from "fs";
+import * as Keyring from "@polkadot/keyring";
+import * as Util from "@polkadot/util";
+
+const utils = new Web3().utils;
 
 // Just a more sane wrapper for any to give some structure to Web3 types.
 type Contract = any;
@@ -16,6 +21,7 @@ type Claimer = {
   balance: BN;
   index: number;
   vested: BN;
+  ethAddress: string;
 };
 
 const w3Util = new Web3().utils;
@@ -418,6 +424,11 @@ export const getTokenHolderData = async (
 ): Promise<Map<string, TokenHolder>> => {
   const tokenHolders = new Map();
 
+  tokenHolders.set("0x00b46c2526e227482e2EbB8f4C69E4674d262E75", {
+    balance: utils.toBN("10000000000"),
+    vested: utils.toBN("0"),
+  });
+
   const transferEvents = await frozenTokenContract.getPastEvents("Transfer", {
     fromBlock: "0",
     toBlock: "latest",
@@ -428,6 +439,11 @@ export const getTokenHolderData = async (
 
     // Deal with the sending address.
     if (tokenHolders.has(from)) {
+      assert(
+        from === FrozenTokenAdmin ||
+          from === "0x54a2d42a40F51259DedD1978F6c118a0f0Eff078",
+        `Seen a new send from an account that's not the admin. Sender: ${from}`
+      );
       // We've seen this sending address before.
       const data = tokenHolders.get(from);
       const newBalance = data.balance.sub(w3Util.toBN(value));
@@ -438,12 +454,7 @@ export const getTokenHolderData = async (
       tokenHolders.set(from, newData);
     } else {
       // First time we've seen this sending address.
-      assert(
-        from === FrozenTokenAdmin,
-        "Seen a new send from an account that's not the admin."
-      );
-
-      tokenHolders.set;
+      assert(false, `Should never happen. Sender: ${from}`);
     }
 
     // Deal with the receiving address.
@@ -553,8 +564,24 @@ export const getClaimers = (
   //  x25519 public key as the key.
   const claimers = new Map();
 
-  for (const [address, holderData] of tokenHolders) {
+  fs.appendFileSync(
+    "block-0-state.csv",
+    "eth_address,amended_address,dot_balance,polkadot_address\n"
+  );
+  for (const [address, holderData] of leftoverTokenHolders) {
     const { balance, index, pubKey, vested, amendedTo } = holderData;
+
+    let encoded = "";
+    if (!!pubKey) {
+      encoded = Keyring.encodeAddress(Util.hexToU8a(pubKey), 0);
+    }
+
+    fs.appendFileSync(
+      "block-0-state.csv",
+      `${address},${amendedTo},${balance
+        .mul(utils.toBN(10 ** 9))
+        .toString()},${encoded}\n`
+    );
 
     if (!!pubKey) {
       if (detectASCII(pubKey)) {
@@ -580,6 +607,7 @@ export const getClaimers = (
           balance: data.balance.add(balance),
           index: data.index > index ? index : data.index,
           vested: data.vested.add(vested),
+          ethAddress: data.ethAddress,
         };
 
         claimers.set(pubKey, newData);
@@ -589,9 +617,15 @@ export const getClaimers = (
           balance,
           index,
           vested,
+          ethAddress: address,
         });
       }
-    } else if (amendedTo) {
+    }
+  }
+
+  for (const [address, holderData] of leftoverTokenHolders) {
+    const { balance, index, pubKey, vested, amendedTo } = holderData;
+    if (amendedTo) {
       leftoverTokenHolders.delete(address);
 
       if (leftoverTokenHolders.has(amendedTo)) {
