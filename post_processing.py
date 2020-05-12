@@ -19,7 +19,7 @@ with open(sys.argv[1], encoding='utf-8') as f:
     for i in range(len(claimers_array)):
         claims_item = chain_spec['genesis']['runtime']['claims']['claims'][i]
         claims_w_decimals = claims_item[1] * DECIMALS
-        chain_spec['genesis']['runtime']['claims']['claims'][i] = [claims_item[0], claims_w_decimals]
+        chain_spec['genesis']['runtime']['claims']['claims'][i] = [claims_item[0], claims_w_decimals, claims_item[2], claims_item[3]]
 
     vested_claimers = chain_spec['genesis']['runtime']['claims']['vesting']
     for i in range(len(vested_claimers)):

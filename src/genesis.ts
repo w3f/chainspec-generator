@@ -26,6 +26,8 @@ const generateGenesis = async (cmd: any) => {
     fs.readFileSync(template, { encoding: "utf-8" })
   );
 
+  const asd = "Default";
+
   const w3 = getW3(endpoint);
   const claimsContract = getClaimsContract(w3, claims);
   const dotAllocationIndicator = getFrozenTokenContract(w3);
@@ -53,7 +55,12 @@ const generateGenesis = async (cmd: any) => {
       ]);
     }
 
-    chainspec.genesis.runtime.claims.claims.push([ethAddr, balance.toNumber()]);
+    chainspec.genesis.runtime.claims.claims.push([
+      ethAddr,
+      balance.toNumber(),
+      null,
+      asd,
+    ]);
   }
 
   assert(holders.size === 0, "Holders should be cleared.");
@@ -64,27 +71,25 @@ const generateGenesis = async (cmd: any) => {
       throw `No pubkey, ${JSON.stringify(claimer)}`;
     }
 
-    const { balance, index, vested } = claimer;
+    const { balance, index, vested, ethAddress } = claimer;
     const encoded = Keyring.encodeAddress(Util.hexToU8a(pubkey), 0);
 
-    // if (encoded == "12dyU6JpyKv44fp6EkDNTrkZqnqSvxWvJoCUM3q3hqaBEYGv") {
-    // This is the sudo allocation, move it to the current sudo's balance.
-    // chainspec.genesis.runtime.balances.balances.push(["", balance]);
-    // }
-
-    chainspec.genesis.runtime.balances.balances.push([
-      encoded,
+    chainspec.genesis.runtime.claims.claims.push([
+      ethAddress,
       balance.toNumber(),
+      encoded,
+      asd,
     ]);
 
     if (vested.gt(w3Util.toBN(0))) {
-      const liquid = balance.sub(vested);
+      // const liquid = balance.sub(vested);
+      const perBlock = vested
+        .mul(w3Util.toBN(Decimals))
+        .divRound(VestingLength);
 
-      chainspec.genesis.runtime.vesting.vesting.push([
-        encoded,
-        0,
-        VestingLength.toNumber(),
-        liquid.toNumber(),
+      chainspec.genesis.runtime.claims.vesting.push([
+        ethAddress,
+        [vested.toNumber(), perBlock.toNumber(), 0],
       ]);
     }
 
@@ -117,6 +122,7 @@ const generateGenesis = async (cmd: any) => {
 
   fs.writeFileSync(tmpOutput, JSON.stringify(chainspec, null, 2));
   console.log(`Written to ${tmpOutput}`);
+  process.exit(0);
 };
 
 export default generateGenesis;
