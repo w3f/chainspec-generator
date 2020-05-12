@@ -417,16 +417,6 @@ export const detectASCII = (pubkey: string): boolean => {
   return isASCII;
 };
 
-const replaceByAmendment = (th: TokenHolder): [string | null, TokenHolder] => {
-  if (th.amendedTo) {
-    const amendedTo = th.amendedTo;
-    delete th.amendedTo;
-    return [amendedTo, th];
-  }
-
-  return [null, th];
-};
-
 export const getTokenHolderData = async (
   frozenTokenContract: any,
   claimsContract: any,
