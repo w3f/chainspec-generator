@@ -110,7 +110,6 @@ const verify = async (cmd: any) => {
 
     if (vested.gt(toBN(0))) {
       const vesting = await api.query.claims.vesting(claimer.ethAddress);
-      // console.log(vesting.toJSON());
       const vJson = vesting.toJSON() as any;
       const amount = toBN(vJson[0]);
       const perBlock = vested.mul(toBN(Decimals)).divRound(VestingLength);
@@ -129,6 +128,16 @@ const verify = async (cmd: any) => {
     }
 
     console.log(`OK: ${encoded}`);
+  }
+
+  /// Check the number of accounts in storage.
+  const accounts = await api.query.system.account.keys();
+  if (accounts.length === 2) {
+    console.log(
+      "FOUND TWO ACCOUNTS. Are you running the test version of the script?"
+    );
+  } else {
+    throw `FOUND ${accounts.length} ACCOUNTS. Was this expected?`;
   }
 
   console.log(`ALL OK`);
