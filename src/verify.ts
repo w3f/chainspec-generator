@@ -85,13 +85,21 @@ const verify = async (cmd: any) => {
     const { balance, index, vested } = claimer;
     const encoded = Keyring.encodeAddress(Util.hexToU8a(pubkey), 0);
 
-    const retBal = await api.query.system.account(encoded);
+    const preclaim = await api.query.claims.preclaims(encoded);
     if (
-      retBal.data.free.toString() !== balance.mul(toBN(Decimals)).toString()
+      preclaim.toString().toLowerCase() !== claimer.ethAddress.toLowerCase()
     ) {
-      throw `Balance Mismatch: Expected ${balance.mul(
+      throw `Preclaim mismatch: Expected ${
+        claimer.ethAddress
+      } but got ${preclaim.toString()}`;
+    }
+
+    const claim = await api.query.claims.claims(claimer.ethAddress);
+
+    if (claim.toString() !== balance.mul(toBN(Decimals)).toString()) {
+      throw `Balance (Claim) Mismatch: Expected ${balance.mul(
         toBN(Decimals)
-      )} but got ${retBal.data.free.toString()}`;
+      )} but got ${claim.toString()}`;
     }
 
     const indexResult = await api.query.indices.accounts(index);
@@ -101,22 +109,20 @@ const verify = async (cmd: any) => {
     }
 
     if (vested.gt(toBN(0))) {
-      const vesting = await api.query.vesting.vesting(encoded);
-      const { locked, perBlock } = vesting.toJSON() as any;
-
-      if (toBN(locked).toString() !== vested.mul(toBN(Decimals)).toString()) {
-        throw `Vesting mismatch: expected ${vested
+      const vesting = await api.query.claims.vesting(claimer.ethAddress);
+      const vJson = vesting.toJSON() as any;
+      const amount = toBN(vJson[0]);
+      const perBlock = vested.mul(toBN(Decimals)).divRound(VestingLength);
+      if (vested.mul(toBN(Decimals)).toString() !== amount.toString()) {
+        throw `Mismatch: expected ${vested
           .mul(toBN(Decimals))
-          .toString()} but got ${toBN(locked).toString()}`;
+          .toString()} but got ${amount.toString()}`;
       }
 
-      // TODO: Check per block
-      const checkPerBlock = vested.mul(toBN(Decimals)).divRound(VestingLength);
-      if (toBN(perBlock).toString() !== checkPerBlock.toString()) {
-        if (toBN(perBlock).sub(checkPerBlock).gt(toBN(1))) {
-          throw `Vesting per block mismatch: expected ${checkPerBlock.toString()} got ${toBN(
-            perBlock
-          ).toString()}`;
+      const rPerBlock = toBN(vJson[1]);
+      if (perBlock.toString() !== rPerBlock.toString()) {
+        if (perBlock.sub(rPerBlock).gt(toBN(1))) {
+          throw `Mismatch (perBlock): expected ${perBlock.toString()} but got ${rPerBlock.toString()}`;
         }
       }
     }
@@ -124,8 +130,18 @@ const verify = async (cmd: any) => {
     console.log(`OK: ${encoded}`);
   }
 
+  /// Check the number of accounts in storage.
+  const accounts = await api.query.system.account.keys();
+  if (accounts.length === 2) {
+    console.log(
+      "FOUND TWO ACCOUNTS. Are you running the test version of the script?"
+    );
+  } else {
+    throw `FOUND ${accounts.length} ACCOUNTS. Was this expected?`;
+  }
+
   console.log(`ALL OK`);
-  process.exit(1);
+  process.exit(0);
 };
 
 export default verify;
