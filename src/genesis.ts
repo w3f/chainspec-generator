@@ -37,13 +37,8 @@ const generateGenesis = async (cmd: any) => {
 
   const statementsArray = fs
     .readFileSync(statements, { encoding: "utf-8" })
-    .split("\n");
-
-  const statementMap = new Map();
-  for (const line of statementsArray) {
-    const [addr, statement] = line.split(",");
-    statementMap.set(addr, statement);
-  }
+    .split("\n")
+    .map((addr: string) => addr.toLowerCase());
 
   const w3 = getW3(endpoint);
   const claimsContract = getClaimsContract(w3, claims);
@@ -60,9 +55,10 @@ const generateGenesis = async (cmd: any) => {
   for (const [ethAddr, holder] of holders) {
     const { balance, vested } = holder;
 
-    const statement = statementMap.has(ethAddr)
-      ? statementMap.get(ethAddr)
-      : null;
+    const statement =
+      statementsArray.indexOf(ethAddr.toLowerCase()) === -1
+        ? "Default"
+        : "Alternative";
 
     holders.delete(ethAddr);
 
@@ -95,9 +91,10 @@ const generateGenesis = async (cmd: any) => {
     const { balance, index, vested, ethAddress } = claimer;
     const encoded = Keyring.encodeAddress(Util.hexToU8a(pubkey), 0);
 
-    const statement = statementMap.has(encoded)
-      ? statementMap.get(encoded)
-      : null;
+    const statement =
+      statementsArray.indexOf(encoded.toLowerCase()) === -1
+        ? "Default"
+        : "Alternative";
 
     chainspec.genesis.runtime.claims.claims.push([
       ethAddress,

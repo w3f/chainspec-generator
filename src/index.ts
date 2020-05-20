@@ -34,7 +34,7 @@ program
   )
   .option(
     "--statements <file>",
-    "The file containing the list of statements. Formatted <address>,<statement> on each line.",
+    "The file containing the list of statements. Formatted <address> on each line. Can be either Polkadot address or Ethereum address. All addresses here will be Alternative statements.",
     "statements.sample.csv"
   )
   .option("--test", "Enable testing mode.", false)

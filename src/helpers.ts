@@ -508,13 +508,11 @@ export const getTokenHolderData = async (
     toBlock: "latest",
   });
 
-  // TODO: Add search for increaseVested events.
   for (const event of vestedEvents) {
-    // console.log(JSON.stringify(event));
     const { eth, amount } = event.returnValues;
 
     if (!tokenHolders.has(eth)) {
-      console.log(`Vested Error: ${eth} not picked up with a balance.`);
+      console.log(`Vested Warning: ${eth} not picked up with a balance.`);
       continue;
     }
 
@@ -524,6 +522,37 @@ export const getTokenHolderData = async (
 
     const newData = Object.assign(data, {
       vested: w3Util.toBN(amount),
+    });
+
+    tokenHolders.set(eth, newData);
+  }
+
+  const incVestedEvents = await claimsContract.getPastEvents(
+    "VestedIncreased",
+    {
+      fromBlock: "0",
+      toBlock: "latest",
+    }
+  );
+
+  for (const event of incVestedEvents) {
+    const { eth, newTotal } = event.returnValues;
+    if (!tokenHolders.has(eth)) {
+      console.log(
+        `VestedIncreased Warning: ${eth} not picked up with balances.`
+      );
+      continue;
+    }
+
+    const data = tokenHolders.get(eth);
+
+    assert(
+      data.vested.gt(0),
+      `VestedIncreased Error: ${eth} is not vested already.`
+    );
+
+    const newData = Object.assign(data, {
+      vested: w3Util.toBN(newTotal),
     });
 
     tokenHolders.set(eth, newData);
