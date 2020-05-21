@@ -3,12 +3,12 @@
     "id": "polkadot_cc1",
     "chainType": "Live",
     "bootNodes": [
-      "/dns4/p2p.cc1-0.polkadot.network/tcp/30100/p2p/QmXbwgCiVSrx2Wn8vP6TAkZdXHKp6ghD4HecdBgh26CLsq",
-      "/dns4/p2p.cc1-1.polkadot.network/tcp/30100/p2p/Qmb6pP2F3GvvW95zu5gqoYizogYXzfuNVRVtDtKrikhAmJ",
-      "/dns4/p2p.cc1-2.polkadot.network/tcp/30100/p2p/QmT2ZqnAyAebGHfhHxZNTGt51ECUf8Dme5B3KqYopb2wC5",
-      "/dns4/p2p.cc1-3.polkadot.network/tcp/30100/p2p/QmWmW3MbGUEKtmYMYC4AtRsLJwmNFDEQBxTURLCb6XRaN2",
-      "/dns4/p2p.cc1-4.polkadot.network/tcp/30100/p2p/QmWhZRrBEHQuVRZUevBi6gs84fmRWixNjeWqncHUydaKky",
-      "/dns4/p2p.cc1-5.polkadot.network/tcp/30100/p2p/QmNpfpmnhLLjkHnebRRecWu6CUnMYiJ3jTeWk4ffxpxxsd"
+      "/dns4/p2p.cc1-0.polkadot.network/tcp/30100/p2p/12D3KooWEdsXX9657ppNqqrRuaCHFvuNemasgU5msLDwSJ6WqsKc",
+      "/dns4/p2p.cc1-1.polkadot.network/tcp/30100/p2p/12D3KooWAtx477KzC8LwqLjWWUG6WF4Gqp2eNXmeqAG98ehAMWYH",
+      "/dns4/p2p.cc1-2.polkadot.network/tcp/30100/p2p/12D3KooWAGCCPZbr9UWGXPtBosTZo91Hb5M3hU8v6xbKgnC5LVao",
+      "/dns4/p2p.cc1-3.polkadot.network/tcp/30100/p2p/12D3KooWJ4eyPowiVcPU46pXuE2cDsiAmuBKXnFcFPapm4xKFdMJ",
+      "/dns4/p2p.cc1-4.polkadot.network/tcp/30100/p2p/12D3KooWNMUcqwSj38oEq1zHeGnWKmMvrCFnpMftw7JzjAtRj2rU",
+      "/dns4/p2p.cc1-5.polkadot.network/tcp/30100/p2p/12D3KooWDs6LnpmWDWgZyGtcLVr3E75CoBxzg1YZUPL5Bb1zz6fM"
     ],
     "telemetryEndpoints": [],
     "protocolId": "dot",
