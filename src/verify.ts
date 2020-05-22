@@ -24,6 +24,49 @@ const getApi = (endpoint: string): Promise<ApiPromise> => {
   });
 };
 
+const validateBalanceAndVesting = async (w3: any, api: any, holders: Map<string, any>) => {
+  const toBN = w3.utils.toBN;
+
+  holders.forEach(async (holder, ethAddr) => {
+    try {
+      const { balance, index, vested } = holder;
+      // query chain data
+      const [claim, vesting] = await Promise.all([
+        api.query.claims.claims(ethAddr),
+        api.query.claims.vesting(ethAddr)
+      ]);
+      const balStr = balance.mul(toBN(Decimals)).toString();
+      // check whether the balance is the same
+      if (claim.toString() !== balStr) {
+        console.log('Ethereum address:', ethAddr);
+        throw `Claims error: Got ${claim.toString()} expected ${balStr}`;
+      }
+      if (vested.gt(toBN(0))) {
+        // console.log(vesting.toJSON());
+        const vJson = vesting.toJSON() as any;
+        const amount = toBN(vJson[0]);
+        // check whether the vesting amount is the same
+        const perBlock = vested.mul(toBN(Decimals)).divRound(VestingLength);
+        if (vested.mul(toBN(Decimals)).toString() !== amount.toString()) {
+          throw `Mismatch: expected ${vested
+            .mul(toBN(Decimals))
+            .toString()} but got ${amount.toString()}`;
+        }
+        const rPerBlock = toBN(vJson[1]);
+        if (perBlock.toString() !== rPerBlock.toString()) {
+          if (perBlock.sub(rPerBlock).gt(toBN(1))) {
+            throw `Mismatch (perBlock): expected ${perBlock.toString()} but got ${rPerBlock.toString()}`;
+          }
+        }
+      }
+      console.log(`OK ${ethAddr}`);
+    }
+    catch (err) {
+      console.log(err);
+    }
+  })
+}
+
 const verify = async (cmd: any) => {
   const { atBlock, claims, endpoint } = cmd;
 
@@ -49,37 +92,8 @@ const verify = async (cmd: any) => {
 
   const [holders, claimers] = getClaimers(tokenHolders);
 
-  for (const [ethAddr, holder] of holders) {
-    const { balance, vested } = holder;
+  await validateBalanceAndVesting(w3, api, holders);
 
-    const claim = await api.query.claims.claims(ethAddr);
-    const balStr = balance.mul(toBN(Decimals)).toString();
-    if (claim.toString() !== balStr) {
-      throw `Claims error: Got ${claim.toString()} expected ${balStr}`;
-    }
-
-    if (vested.gt(toBN(0))) {
-      const vesting = await api.query.claims.vesting(ethAddr);
-      // console.log(vesting.toJSON());
-      const vJson = vesting.toJSON() as any;
-      const amount = toBN(vJson[0]);
-      const perBlock = vested.mul(toBN(Decimals)).divRound(VestingLength);
-      if (vested.mul(toBN(Decimals)).toString() !== amount.toString()) {
-        throw `Mismatch: expected ${vested
-          .mul(toBN(Decimals))
-          .toString()} but got ${amount.toString()}`;
-      }
-
-      const rPerBlock = toBN(vJson[1]);
-      if (perBlock.toString() !== rPerBlock.toString()) {
-        if (perBlock.sub(rPerBlock).gt(toBN(1))) {
-          throw `Mismatch (perBlock): expected ${perBlock.toString()} but got ${rPerBlock.toString()}`;
-        }
-      }
-    }
-
-    console.log(`OK ${ethAddr}`);
-  }
 
   for (const [pubkey, claimer] of claimers) {
     const { balance, index, vested } = claimer;
@@ -110,8 +124,13 @@ const verify = async (cmd: any) => {
 
     if (vested.gt(toBN(0))) {
       const vesting = await api.query.claims.vesting(claimer.ethAddress);
+
       const vJson = vesting.toJSON() as any;
       const amount = toBN(vJson[0]);
+
+      console.log(' claimer. ether address:', claimer.ethAddress);
+      console.log('#### vest amount-on-polkadot :', amount)
+      console.log(' ### amount on ethereum :', vested.mul(toBN(Decimals)).toString())
       const perBlock = vested.mul(toBN(Decimals)).divRound(VestingLength);
       if (vested.mul(toBN(Decimals)).toString() !== amount.toString()) {
         throw `Mismatch: expected ${vested
