@@ -95,6 +95,7 @@ const verify = async (cmd: any) => {
   await validateBalanceAndVesting(w3, api, holders);
 
 
+  // Todo: Not check yet
   for (const [pubkey, claimer] of claimers) {
     const { balance, index, vested } = claimer;
     const encoded = Keyring.encodeAddress(Util.hexToU8a(pubkey), 0);
@@ -124,13 +125,9 @@ const verify = async (cmd: any) => {
 
     if (vested.gt(toBN(0))) {
       const vesting = await api.query.claims.vesting(claimer.ethAddress);
-
       const vJson = vesting.toJSON() as any;
       const amount = toBN(vJson[0]);
 
-      console.log(' claimer. ether address:', claimer.ethAddress);
-      console.log('#### vest amount-on-polkadot :', amount)
-      console.log(' ### amount on ethereum :', vested.mul(toBN(Decimals)).toString())
       const perBlock = vested.mul(toBN(Decimals)).divRound(VestingLength);
       if (vested.mul(toBN(Decimals)).toString() !== amount.toString()) {
         throw `Mismatch: expected ${vested
