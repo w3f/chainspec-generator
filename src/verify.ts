@@ -26,19 +26,19 @@ const getApi = (endpoint: string): Promise<ApiPromise> => {
 
 const validateBalanceAndVesting = async (w3: any, api: any, holders: Map<string, any>) => {
   const toBN = w3.utils.toBN;
-
-  holders.forEach(async (holder, ethAddr) => {
+  let counter = 0;
+  for (const holder of holders) {
     try {
-      const { balance, index, vested } = holder;
+      const { balance, index, vested } = holder[1];
       // query chain data
       const [claim, vesting] = await Promise.all([
-        api.query.claims.claims(ethAddr),
-        api.query.claims.vesting(ethAddr)
+        api.query.claims.claims(holder[0]),
+        api.query.claims.vesting(holder[0])
       ]);
       const balStr = balance.mul(toBN(Decimals)).toString();
       // check whether the balance is the same
       if (claim.toString() !== balStr) {
-        console.log('Ethereum address:', ethAddr);
+        console.log('Ethereum address:', holder[0]);
         throw `Claims error: Got ${claim.toString()} expected ${balStr}`;
       }
       if (vested.gt(toBN(0))) {
@@ -59,12 +59,14 @@ const validateBalanceAndVesting = async (w3: any, api: any, holders: Map<string,
           }
         }
       }
-      console.log(`OK ${ethAddr}`);
+      counter++;
+      console.log(`OK ${holder[0]}`);
     }
     catch (err) {
       console.log(err);
     }
-  })
+  }
+  return counter;
 }
 
 const verify = async (cmd: any) => {
@@ -92,8 +94,9 @@ const verify = async (cmd: any) => {
 
   const [holders, claimers] = getClaimers(tokenHolders);
 
-  await validateBalanceAndVesting(w3, api, holders);
+  const numOfSuccessAddrs = await validateBalanceAndVesting(w3, api, holders);
 
+  console.log(`Number of the ethereum adddresses "validateBalanceAndVesting" passed: ${numOfSuccessAddrs}.`);
 
   // Todo: Not check yet
   for (const [pubkey, claimer] of claimers) {
