@@ -191,8 +191,8 @@ const verify = async (cmd: any) => {
     throw `FOUND ${accounts.length} ACCOUNTS. Was this expected?`;
   }
 
-  // console.log(`Number of the ethereum addresses "validateBalanceAndVesting" passed: ${numOfSuccessAddrs}.`);
-  // console.log(`Number of polkadot addresses passed: ${counter}`);
+  console.log(`Number of the ethereum addresses "validateBalanceAndVesting" passed: ${numOfSuccessAddrs}.`);
+  console.log(`Number of polkadot addresses passed: ${counter}`);
 
   console.log(`ALL OK`);
   process.exit(0);
