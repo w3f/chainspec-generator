@@ -73,7 +73,6 @@ const generateGenesis = async (opts: Opts): Promise<void> => {
     holders.delete(ethAddr);
 
     if (vested.gt(w3Util.toBN(0))) {
-      console.log("VESTED ETHEREUM ADDRESS")
       const perBlock = vested
         .mul(w3Util.toBN(Decimals))
         .divRound(VestingLength);
@@ -115,7 +114,6 @@ const generateGenesis = async (opts: Opts): Promise<void> => {
     ]);
 
     if (vested.gt(w3Util.toBN(0))) {
-      console.log("VESTED POLKADOT ADDRESS");
       const perBlock = vested
         .mul(w3Util.toBN(Decimals))
         .divRound(VestingLength);
