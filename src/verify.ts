@@ -1,6 +1,7 @@
 import { ApiPromise, WsProvider } from "@polkadot/api";
 import * as Keyring from "@polkadot/keyring";
 import * as Util from "@polkadot/util";
+import * as fs from "fs";
 import Web3 from "web3";
 
 import {
@@ -89,19 +90,73 @@ const verify = async (cmd: any) => {
 
   const [holders, claimers] = getClaimers(tokenHolders);
 
+  /// Check the statements.
+  let statementsArray: string[] = [];
+  fs
+  .readFileSync("SAFT_accounts.csv", { encoding: "utf-8" })
+  .split("\n")
+  .forEach((line: any) => {
+    const [ethAddr, dotAddr] = line.split(",");
+    if (dotAddr) statementsArray.push(dotAddr);
+    if (ethAddr.startsWith("0x")) statementsArray.push(ethAddr);
+  })
+  
+  for (const addr of statementsArray) {
+    if (addr.startsWith("0x")) {
+      const statementKind = await api.query.claims.signing(addr);
+      if (!statementKind.toString()) {
+        const claim = await api.query.claims.claims(addr);
+        if (claim.toString()) {
+          throw `Found claim for ${addr} but one shouldn't exist.`
+        }
+      } else {
+        if (statementKind.toString() !== "Alternative") {
+          throw `${addr} should be SAFT but is not.`
+        }
+      }
+    }
+    if (addr.startsWith("1")) {
+      const ethAddr = await api.query.claims.preclaims(addr);
+      if (ethAddr.toString()) { 
+        const statementKind = await api.query.claims.signing(ethAddr.toString());
+        if (statementKind.toString() !== "Alternative") {
+          throw `${addr} should be SAFT but is not. Statement kind: ${statementKind.toString()}`
+        }
+      }
+    }
+  }
+
   const numOfSuccessAddrs = await validateBalanceAndVesting(w3, api, holders);
 
+  let counter = 0;
   for (const [pubkey, claimer] of claimers) {
     const { balance, index, vested } = claimer;
     const encoded = Keyring.encodeAddress(Util.hexToU8a(pubkey), 0);
 
     const preclaim = await api.query.claims.preclaims(encoded);
+    
+    if (statementsArray.indexOf(encoded) === -1) {
+      // check it's a regular statement.
+      const statementKind = await api.query.claims.signing(preclaim.toString());
+      if (statementKind.toString() !== "Default") {
+        // The eth address should be in the statements array then.
+        let found = false;
+        for (const addr of statementsArray) {
+          if (addr.toLowerCase() === preclaim.toString().toLowerCase()) found = true;
+          else if (addr == preclaim.toString()) found = true;
+        }
+        if (!found) {
+          throw `${encoded} should have regular statement but has something else. Has: ${statementKind.toString()} | Preclaim: ${preclaim.toString()}`;
+        }
+      } 
+    } 
+    
     if (
       preclaim.toString().toLowerCase() !== claimer.ethAddress.toLowerCase()
     ) {
       throw `Preclaim mismatch: Expected ${
         claimer.ethAddress
-      } but got ${preclaim.toString()}`;
+      } but got ${preclaim.toString()} (Polkadot Address: ${encoded})`;
     }
 
     const claim = await api.query.claims.claims(claimer.ethAddress);
@@ -138,9 +193,10 @@ const verify = async (cmd: any) => {
       }
     }
 
+    counter++;
     console.log(`OK: ${encoded}`);
   }
-  
+
   /// Check the number of accounts in storage.
   const accounts = await api.query.system.account.keys();
   if (accounts.length === 2) {
@@ -161,13 +217,12 @@ const verify = async (cmd: any) => {
     throw `FOUND ${validators.length} validators. Was this expected?`;
   }
 
+  console.log("ALL ALTERNATIVE STATEMENTS CHECK OUT")
   console.log(`Number of the ethereum addresses "validateBalanceAndVesting" passed: ${numOfSuccessAddrs}.`);
+  console.log(`Number of polkadot addresses passed: ${counter}`);
 
   console.log(`ALL OK`);
   process.exit(0);
-
-
-
 };
 
 export default verify;
