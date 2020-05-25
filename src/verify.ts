@@ -159,8 +159,7 @@ const verify = async (cmd: any) => {
     } else {
       throw `FOUND ${accounts.length} ACCOUNTS. Was this expected?`;
     }
-    console.log("what the fuck!!!44444")
-
+    
     /// Check stakers in storage.
     const validators = await api.query.session.validators();
     if (validators.length === 4) {
@@ -175,7 +174,7 @@ const verify = async (cmd: any) => {
   
     console.log(`ALL OK`);
     process.exit(0);
-    
+
   } catch (err) {
     console.log(err);
   }
