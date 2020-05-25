@@ -61,8 +61,7 @@ const validateBalanceAndVesting = async (w3: any, api: any, holders: Map<string,
       }
       counter++;
       console.log(`OK ${holder[0]}`);
-    }
-    catch (err) {
+    } catch (err) {
       console.log(err);
     }
   }
@@ -96,71 +95,91 @@ const verify = async (cmd: any) => {
 
   const numOfSuccessAddrs = await validateBalanceAndVesting(w3, api, holders);
 
-  // Todo: Not check yet
   for (const [pubkey, claimer] of claimers) {
-    const { balance, index, vested } = claimer;
-    const encoded = Keyring.encodeAddress(Util.hexToU8a(pubkey), 0);
+    try {
+      const { balance, index, vested } = claimer;
+      const encoded = Keyring.encodeAddress(Util.hexToU8a(pubkey), 0);
 
-    const preclaim = await api.query.claims.preclaims(encoded);
-    if (
-      preclaim.toString().toLowerCase() !== claimer.ethAddress.toLowerCase()
-    ) {
-      throw `Preclaim mismatch: Expected ${
-        claimer.ethAddress
-      } but got ${preclaim.toString()}`;
-    }
-
-    const claim = await api.query.claims.claims(claimer.ethAddress);
-
-    if (claim.toString() !== balance.mul(toBN(Decimals)).toString()) {
-      throw `Balance (Claim) Mismatch: Expected ${balance.mul(
-        toBN(Decimals)
-      )} but got ${claim.toString()}`;
-    }
-
-    const indexResult = await api.query.indices.accounts(index);
-    const account = (indexResult.toJSON() as any)[0];
-    if (account !== encoded) {
-      throw `Index mismatch: Expected ${encoded} but got ${account}`;
-    }
-
-    if (vested.gt(toBN(0))) {
-      const vesting = await api.query.claims.vesting(claimer.ethAddress);
-      const vJson = vesting.toJSON() as any;
-      const amount = toBN(vJson[0]);
-
-      const perBlock = vested.mul(toBN(Decimals)).divRound(VestingLength);
-      if (vested.mul(toBN(Decimals)).toString() !== amount.toString()) {
-        throw `Mismatch: expected ${vested
-          .mul(toBN(Decimals))
-          .toString()} but got ${amount.toString()}`;
+      const preclaim = await api.query.claims.preclaims(encoded);
+      if (
+        preclaim.toString().toLowerCase() !== claimer.ethAddress.toLowerCase()
+      ) {
+        throw `Preclaim mismatch: Expected ${
+          claimer.ethAddress
+        } but got ${preclaim.toString()}`;
       }
 
-      const rPerBlock = toBN(vJson[1]);
-      if (perBlock.toString() !== rPerBlock.toString()) {
-        if (perBlock.sub(rPerBlock).gt(toBN(1))) {
-          throw `Mismatch (perBlock): expected ${perBlock.toString()} but got ${rPerBlock.toString()}`;
+      const claim = await api.query.claims.claims(claimer.ethAddress);
+
+      if (claim.toString() !== balance.mul(toBN(Decimals)).toString()) {
+        throw `Balance (Claim) Mismatch: Expected ${balance.mul(
+          toBN(Decimals)
+        )} but got ${claim.toString()}`;
+      }
+
+      const indexResult = await api.query.indices.accounts(index);
+      const account = (indexResult.toJSON() as any)[0];
+      if (account !== encoded) {
+        throw `Index mismatch: Expected ${encoded} but got ${account}`;
+      }
+
+      if (vested.gt(toBN(0))) {
+        const vesting = await api.query.claims.vesting(claimer.ethAddress);
+        const vJson = vesting.toJSON() as any;
+        const amount = toBN(vJson[0]);
+
+        const perBlock = vested.mul(toBN(Decimals)).divRound(VestingLength);
+        if (vested.mul(toBN(Decimals)).toString() !== amount.toString()) {
+          throw `Mismatch: expected ${vested
+            .mul(toBN(Decimals))
+            .toString()} but got ${amount.toString()}`;
+        }
+
+        const rPerBlock = toBN(vJson[1]);
+        if (perBlock.toString() !== rPerBlock.toString()) {
+          if (perBlock.sub(rPerBlock).gt(toBN(1))) {
+            throw `Mismatch (perBlock): expected ${perBlock.toString()} but got ${rPerBlock.toString()}`;
+          }
         }
       }
+
+      console.log(`OK: ${encoded}`);
+    } catch (err) {
+      console.log(err);
+    }
+  }
+  
+  try {
+    /// Check the number of accounts in storage.
+    const accounts = await api.query.system.account.keys();
+    if (accounts.length === 2) {
+      console.log(
+        "FOUND TWO ACCOUNTS. Are you running the test version of the script?"
+      );
+    } else {
+      throw `FOUND ${accounts.length} ACCOUNTS. Was this expected?`;
+    }
+    console.log("what the fuck!!!44444")
+
+    /// Check stakers in storage.
+    const validators = await api.query.session.validators();
+    if (validators.length === 4) {
+      console.log(
+        "Are you running for the Polkadot soft launch?"
+      );
+    } else {
+      throw `FOUND ${validators.length} validators. Was this expected?`;
     }
 
-    console.log(`OK: ${encoded}`);
-  }
-
-  /// Check the number of accounts in storage.
-  const accounts = await api.query.system.account.keys();
-  if (accounts.length === 2) {
-    console.log(
-      "FOUND TWO ACCOUNTS. Are you running the test version of the script?"
-    );
-  } else {
-    throw `FOUND ${accounts.length} ACCOUNTS. Was this expected?`;
-  }
-
-  console.log(`Number of the ethereum addresses "validateBalanceAndVesting" passed: ${numOfSuccessAddrs}.`);
+    console.log(`Number of the ethereum addresses "validateBalanceAndVesting" passed: ${numOfSuccessAddrs}.`);
   
-  console.log(`ALL OK`);
-  process.exit(0);
+    console.log(`ALL OK`);
+    process.exit(0);
+    
+  } catch (err) {
+    console.log(err);
+  }
+
 };
 
 export default verify;
