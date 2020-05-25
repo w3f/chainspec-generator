@@ -29,43 +29,38 @@ const validateBalanceAndVesting = async (w3: any, api: any, holders: Map<string,
   const toBN = w3.utils.toBN;
   let counter = 0;
   for (const holder of holders) {
-    try {
-      const { balance, index, vested } = holder[1];
-      // query chain data
-      const [claim, vesting] = await Promise.all([
-        api.query.claims.claims(holder[0]),
-        api.query.claims.vesting(holder[0])
-      ]);
-      const balStr = balance.mul(toBN(Decimals)).toString();
-      // check whether the balance is the same
-      if (claim.toString() !== balStr) {
-        console.log('Ethereum address:', holder[0]);
-        throw `Claims error: Got ${claim.toString()} expected ${balStr}`;
+    const { balance, index, vested } = holder[1];
+    // query chain data
+    const [claim, vesting] = await Promise.all([
+      api.query.claims.claims(holder[0]),
+      api.query.claims.vesting(holder[0])
+    ]);
+    const balStr = balance.mul(toBN(Decimals)).toString();
+    // check whether the balance is the same
+    if (claim.toString() !== balStr) {
+      console.log('Ethereum address:', holder[0]);
+      throw `Claims error: Got ${claim.toString()} expected ${balStr}`;
+    }
+    if (vested.gt(toBN(0))) {
+      // console.log(vesting.toJSON());
+      const vJson = vesting.toJSON() as any;
+      const amount = toBN(vJson[0]);
+      // check whether the vesting amount is the same
+      const perBlock = vested.mul(toBN(Decimals)).divRound(VestingLength);
+      if (vested.mul(toBN(Decimals)).toString() !== amount.toString()) {
+        throw `Mismatch: expected ${vested
+          .mul(toBN(Decimals))
+          .toString()} but got ${amount.toString()}`;
       }
-      if (vested.gt(toBN(0))) {
-        // console.log(vesting.toJSON());
-        const vJson = vesting.toJSON() as any;
-        const amount = toBN(vJson[0]);
-        // check whether the vesting amount is the same
-        const perBlock = vested.mul(toBN(Decimals)).divRound(VestingLength);
-        if (vested.mul(toBN(Decimals)).toString() !== amount.toString()) {
-          throw `Mismatch: expected ${vested
-            .mul(toBN(Decimals))
-            .toString()} but got ${amount.toString()}`;
-        }
-        const rPerBlock = toBN(vJson[1]);
-        if (perBlock.toString() !== rPerBlock.toString()) {
-          if (perBlock.sub(rPerBlock).gt(toBN(1))) {
-            throw `Mismatch (perBlock): expected ${perBlock.toString()} but got ${rPerBlock.toString()}`;
-          }
+      const rPerBlock = toBN(vJson[1]);
+      if (perBlock.toString() !== rPerBlock.toString()) {
+        if (perBlock.sub(rPerBlock).gt(toBN(1))) {
+          throw `Mismatch (perBlock): expected ${perBlock.toString()} but got ${rPerBlock.toString()}`;
         }
       }
-      counter++;
-      console.log(`OK ${holder[0]}`);
     }
-    catch (err) {
-      console.log(err);
-    }
+    counter++;
+    console.log(`OK ${holder[0]}`);
   }
   return counter;
 }
@@ -133,7 +128,6 @@ const verify = async (cmd: any) => {
 
   const numOfSuccessAddrs = await validateBalanceAndVesting(w3, api, holders);
 
-  // Todo: Not check yet
   let counter = 0;
   for (const [pubkey, claimer] of claimers) {
     const { balance, index, vested } = claimer;
@@ -203,8 +197,6 @@ const verify = async (cmd: any) => {
     console.log(`OK: ${encoded}`);
   }
 
-  console.log("ALL ALTERNATIVE STATEMENTS CHECK OUT")
-
   /// Check the number of accounts in storage.
   const accounts = await api.query.system.account.keys();
   if (accounts.length === 2) {
@@ -214,7 +206,18 @@ const verify = async (cmd: any) => {
   } else {
     throw `FOUND ${accounts.length} ACCOUNTS. Was this expected?`;
   }
+  
+  /// Check stakers in storage.
+  const validators = await api.query.session.validators();
+  if (validators.length === 6) {
+    console.log(
+      "Are you running for the Polkadot soft launch?"
+    );
+  } else {
+    throw `FOUND ${validators.length} validators. Was this expected?`;
+  }
 
+  console.log("ALL ALTERNATIVE STATEMENTS CHECK OUT")
   console.log(`Number of the ethereum addresses "validateBalanceAndVesting" passed: ${numOfSuccessAddrs}.`);
   console.log(`Number of polkadot addresses passed: ${counter}`);
 
