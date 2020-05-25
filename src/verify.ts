@@ -1,6 +1,7 @@
 import { ApiPromise, WsProvider } from "@polkadot/api";
 import * as Keyring from "@polkadot/keyring";
 import * as Util from "@polkadot/util";
+import * as fs from "fs";
 import Web3 from "web3";
 
 import {
@@ -97,6 +98,7 @@ const verify = async (cmd: any) => {
   const numOfSuccessAddrs = await validateBalanceAndVesting(w3, api, holders);
 
   // Todo: Not check yet
+  let counter = 0;
   for (const [pubkey, claimer] of claimers) {
     const { balance, index, vested } = claimer;
     const encoded = Keyring.encodeAddress(Util.hexToU8a(pubkey), 0);
@@ -144,8 +146,40 @@ const verify = async (cmd: any) => {
       }
     }
 
+    counter++;
     console.log(`OK: ${encoded}`);
   }
+
+  /// Check the statements.
+  const statementsArray = fs
+  .readFileSync("SAFT_accounts.csv", { encoding: "utf-8" })
+  .split("\n");
+
+  for (const line of statementsArray) {
+    const [ethAddr, dotAddr] = line.split(",");
+    if (dotAddr && ethAddr.startsWith("0x")) {
+      const checkAddr = await api.query.claims.preclaims(dotAddr);
+      const statementKind = await api.query.claims.signing(checkAddr.toString());
+      if (statementKind.toString() !== "Alternative") {
+        throw `${dotAddr} with ${ethAddr} and ${checkAddr.toString()} should be SAFT but is not.`
+      }
+    } 
+    if (ethAddr.startsWith("0x")) {
+      const statementKind = await api.query.claims.signing(ethAddr);
+      if (!statementKind.toString()) {
+        const claim = await api.query.claims.claims(ethAddr);
+        if (claim.toString()) {
+          throw `Found claim for ${ethAddr} but one shouldn't exist.`
+        }
+      } else {
+        if (statementKind.toString() !== "Alternative") {
+          throw `${ethAddr} should be SAFT but is not.`
+        }
+      }
+    }
+  }
+
+  console.log("ALL ALTERNATIVE STATEMENTS CHECK OUT")
 
   /// Check the number of accounts in storage.
   const accounts = await api.query.system.account.keys();
@@ -157,8 +191,9 @@ const verify = async (cmd: any) => {
     throw `FOUND ${accounts.length} ACCOUNTS. Was this expected?`;
   }
 
-  console.log(`Number of the ethereum addresses "validateBalanceAndVesting" passed: ${numOfSuccessAddrs}.`);
-  
+  // console.log(`Number of the ethereum addresses "validateBalanceAndVesting" passed: ${numOfSuccessAddrs}.`);
+  // console.log(`Number of polkadot addresses passed: ${counter}`);
+
   console.log(`ALL OK`);
   process.exit(0);
 };

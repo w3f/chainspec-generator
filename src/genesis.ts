@@ -45,17 +45,17 @@ const generateGenesis = async (opts: Opts): Promise<void> => {
     fs.readFileSync(template, { encoding: "utf-8" })
   );
 
-  const statementsArray = fs
+  let allStatements: string[] = [];
+  fs
     .readFileSync(statements, { encoding: "utf-8" })
     .split("\n")
-    .map((line: string) => {
+    .forEach((line: string) => {
       const [ethAddr, dotAddr] = line.split(",");
-      if (dotAddr) return dotAddr.toLowerCase();
-      else return ethAddr.toLowerCase();
+      if (dotAddr) allStatements.push(dotAddr.toLowerCase());
+      if (ethAddr.startsWith("0x")) allStatements.push(ethAddr.toLowerCase());
     });
-  
-  console.log(statementsArray)
 
+  
   const w3 = getW3(endpoint);
   const claimsContract = getClaimsContract(w3, claims);
   const dotAllocationIndicator = getFrozenTokenContract(w3);
@@ -72,7 +72,7 @@ const generateGenesis = async (opts: Opts): Promise<void> => {
     const { balance, vested } = holder;
 
     const statement =
-      statementsArray.indexOf(ethAddr.toLowerCase()) === -1
+      allStatements.indexOf(ethAddr.toLowerCase()) === -1
         ? "Regular"
         : "Saft";
 
@@ -108,7 +108,7 @@ const generateGenesis = async (opts: Opts): Promise<void> => {
     const encoded = Keyring.encodeAddress(Util.hexToU8a(pubkey), 0);
 
     const statement =
-      statementsArray.indexOf(encoded.toLowerCase()) === -1
+      (allStatements.indexOf(encoded.toLowerCase()) === -1 && allStatements.indexOf(ethAddress.toLowerCase()) === -1)
         ? "Regular"
         : "Saft";
 
