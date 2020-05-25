@@ -28,15 +28,15 @@ const generateSampleStatements = async (opts: any) => {
   let counter = 0;
   for (const [ethAddr] of holders) {
     if (counter % 2 === 1) {
-      fs.appendFileSync(output, `${ethAddr}\n`);
+      fs.appendFileSync(output, `${ethAddr},\n`);
     }
     counter++;
   }
 
-  for (const [pubkey] of claimers) {
+  for (const [pubkey, claimer] of claimers) {
     if (counter % 2 === 1) {
       const encoded = Keyring.encodeAddress(Util.hexToU8a(pubkey), 0);
-      fs.appendFileSync(output, `${encoded}\n`);
+      fs.appendFileSync(output, `${claimer.ethAddress},${encoded}\n`);
     }
     counter++;
   }
