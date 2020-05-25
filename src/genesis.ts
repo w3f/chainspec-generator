@@ -20,7 +20,17 @@ const VestingLength = w3Util.toBN(Math.ceil(24 * 30 * 24 * 60 * (60 / 6)));
 
 const Decimals = 10 ** 9;
 
-const generateGenesis = async (cmd: any) => {
+type Opts = {
+  atBlock: string;
+  claims: string;
+  endpoint: string;
+  template: string;
+  test: boolean;
+  tmpOutput: string;
+  statements: string;
+};
+
+const generateGenesis = async (opts: Opts): Promise<void> => {
   const {
     atBlock,
     claims,
@@ -29,7 +39,7 @@ const generateGenesis = async (cmd: any) => {
     test,
     tmpOutput,
     statements,
-  } = cmd;
+  } = opts;
 
   const chainspec = JSON.parse(
     fs.readFileSync(template, { encoding: "utf-8" })
@@ -37,13 +47,8 @@ const generateGenesis = async (cmd: any) => {
 
   const statementsArray = fs
     .readFileSync(statements, { encoding: "utf-8" })
-    .split("\n");
-
-  const statementMap = new Map();
-  for (const line of statementsArray) {
-    const [addr, statement] = line.split(",");
-    statementMap.set(addr, statement);
-  }
+    .split("\n")
+    .map((addr: string) => addr.toLowerCase());
 
   const w3 = getW3(endpoint);
   const claimsContract = getClaimsContract(w3, claims);
@@ -60,13 +65,15 @@ const generateGenesis = async (cmd: any) => {
   for (const [ethAddr, holder] of holders) {
     const { balance, vested } = holder;
 
-    const statement = statementMap.has(ethAddr)
-      ? statementMap.get(ethAddr)
-      : null;
+    const statement =
+      statementsArray.indexOf(ethAddr.toLowerCase()) === -1
+        ? "Regular"
+        : "Saft";
 
     holders.delete(ethAddr);
 
     if (vested.gt(w3Util.toBN(0))) {
+      console.log("VESTED ETHEREUM ADDRESS")
       const perBlock = vested
         .mul(w3Util.toBN(Decimals))
         .divRound(VestingLength);
@@ -95,9 +102,10 @@ const generateGenesis = async (cmd: any) => {
     const { balance, index, vested, ethAddress } = claimer;
     const encoded = Keyring.encodeAddress(Util.hexToU8a(pubkey), 0);
 
-    const statement = statementMap.has(encoded)
-      ? statementMap.get(encoded)
-      : null;
+    const statement =
+      statementsArray.indexOf(encoded.toLowerCase()) === -1
+        ? "Regular"
+        : "Saft";
 
     chainspec.genesis.runtime.claims.claims.push([
       ethAddress,
@@ -107,6 +115,7 @@ const generateGenesis = async (cmd: any) => {
     ]);
 
     if (vested.gt(w3Util.toBN(0))) {
+      console.log("VESTED POLKADOT ADDRESS");
       const perBlock = vested
         .mul(w3Util.toBN(Decimals))
         .divRound(VestingLength);

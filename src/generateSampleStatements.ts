@@ -1,10 +1,8 @@
 import * as Keyring from "@polkadot/keyring";
 import * as Util from "@polkadot/util";
 import * as fs from "fs";
-import Web3 from "web3";
 
 import {
-  assert,
   getW3,
   getClaimsContract,
   getFrozenTokenContract,
@@ -27,17 +25,19 @@ const generateSampleStatements = async (opts: any) => {
 
   const [holders, claimers] = getClaimers(tokenHolders);
 
-  const statements = ["Default", "Alternative"];
-
   let counter = 0;
   for (const [ethAddr] of holders) {
-    fs.appendFileSync(output, `${ethAddr},${statements[counter % 2]}\n`);
+    if (counter % 2 === 1) {
+      fs.appendFileSync(output, `${ethAddr}\n`);
+    }
     counter++;
   }
 
   for (const [pubkey] of claimers) {
-    const encoded = Keyring.encodeAddress(Util.hexToU8a(pubkey), 0);
-    fs.appendFileSync(output, `${encoded},${statements[counter % 2]}\n`);
+    if (counter % 2 === 1) {
+      const encoded = Keyring.encodeAddress(Util.hexToU8a(pubkey), 0);
+      fs.appendFileSync(output, `${encoded}\n`);
+    }
     counter++;
   }
 };
