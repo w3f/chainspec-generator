@@ -15,7 +15,8 @@ fi
 
 yarn genesis --endpoint $HTTP_ENDPOINT --atBlock $AT_BLOCK\
  --claims $CLAIMS_CONTRACT --tmpOutput polkadot.tmp.json\
- --template templates/polkadot.template.json --test
+ --template templates/polkadot.template.json --test\
+ --statements SAFT_accounts.csv
 
 python3 post_processing.py polkadot.tmp.json
 

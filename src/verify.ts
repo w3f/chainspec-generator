@@ -96,8 +96,6 @@ const verify = async (cmd: any) => {
 
   const numOfSuccessAddrs = await validateBalanceAndVesting(w3, api, holders);
 
-  console.log(`Number of the ethereum adddresses "validateBalanceAndVesting" passed: ${numOfSuccessAddrs}.`);
-
   // Todo: Not check yet
   for (const [pubkey, claimer] of claimers) {
     const { balance, index, vested } = claimer;
@@ -159,6 +157,8 @@ const verify = async (cmd: any) => {
     throw `FOUND ${accounts.length} ACCOUNTS. Was this expected?`;
   }
 
+  console.log(`Number of the ethereum addresses "validateBalanceAndVesting" passed: ${numOfSuccessAddrs}.`);
+  
   console.log(`ALL OK`);
   process.exit(0);
 };

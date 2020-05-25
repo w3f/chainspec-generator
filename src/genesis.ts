@@ -48,7 +48,13 @@ const generateGenesis = async (opts: Opts): Promise<void> => {
   const statementsArray = fs
     .readFileSync(statements, { encoding: "utf-8" })
     .split("\n")
-    .map((addr: string) => addr.toLowerCase());
+    .map((line: string) => {
+      const [ethAddr, dotAddr] = line.split(",");
+      if (dotAddr) return dotAddr.toLowerCase();
+      else return ethAddr.toLowerCase();
+    });
+  
+  console.log(statementsArray)
 
   const w3 = getW3(endpoint);
   const claimsContract = getClaimsContract(w3, claims);
