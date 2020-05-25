@@ -213,6 +213,8 @@ const verify = async (cmd: any) => {
     console.log(
       "Are you running for the Polkadot soft launch?"
     );
+  } else if (validators.length === 1) {
+    console.log("FOUND ONE VALIDATOR. Are you running the test version of the script?");
   } else {
     throw `FOUND ${validators.length} validators. Was this expected?`;
   }
