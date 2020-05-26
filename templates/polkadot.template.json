@@ -59,7 +59,11 @@
               },
               "collectiveInstance2": {
                 "phantom": null,
-                "members": []
+                "members": [
+                  "165PL4saAAYjj5HefKBMEgCz7ToHgC8GT7cbNSvnsJiL13Zf",
+                  "15yty4Usitt9SGMgWvZdrRjcCeBa7dtrGpdkVck86BTiJoDz",
+                  "14GVkHxNBUV4BckMdwwVDVhJ9Xb6ckZDZZvE8eMc5MCfbd3x"
+                ]
               },
               "electionsPhragmen": {
                 "members": []
@@ -83,7 +87,7 @@
                 "vesting": []
               },
               "sudo": {
-                "key": "5CASb3ZcaJWARGSoZS42JYU1EbKnksJ5Fd4GyhiBa1kbaFAh"
+                "key": "1KvKReVmUiTc2LW2a4qyHsaJJ9eE9LRsywZkMk5hyBeyHgw"
               }
         }
     }
